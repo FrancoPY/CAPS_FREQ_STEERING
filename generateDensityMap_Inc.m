@@ -1,4 +1,4 @@
-sample = 'Phantom_inc_BA11_FrecSteering_v1';
+sample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
 
 Nx = 2000;
 Ny = 2000;
