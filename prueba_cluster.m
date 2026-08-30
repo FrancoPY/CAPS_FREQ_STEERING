@@ -1,1 +1,3 @@
-fprintf("Hola mundo");
+fprintf("Hola mundo\n");
+
+% a ver que pasa
