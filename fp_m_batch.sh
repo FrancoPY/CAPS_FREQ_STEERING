@@ -5,4 +5,4 @@
 #SBATCH --nodelist=worker3
 #SBATCH --output="CAPS_in_w1_densitymapInc.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap_Inc;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "simulateInc_CAPS_FreqSteering;  exit"
