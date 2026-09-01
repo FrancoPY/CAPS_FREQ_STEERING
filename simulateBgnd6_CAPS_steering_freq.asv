@@ -69,16 +69,15 @@ for e = 0:numElem-1
 end
 
 %Máscara de m subaperturas
-src_mask_sub = cell(1,m);
 for j=1:m
-    active_Elems = j:m:numElem;
+    src_mask_sub = cell(1,m);
+
     src_mask_M = false(kgrid.Nx, kgrid.Ny);
-    for e=active_Elems
+    for e=1:m:numElem
         ys = y0 + (e-1)* elemWidth;
-        ye= ys + elemWidth-1;
-        src_mask_M(x_ap, ys:ye) = true;
+        ye= ys + elemWidth;
+        
     end
-    src_mask_sub{j} = src_mask_M;
 end
 
 % Máscara de recepción, debe estar completa simepre
