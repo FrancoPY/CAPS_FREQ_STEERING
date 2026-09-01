@@ -43,9 +43,6 @@ medium.BonA            = 6.00 * ones(nx, ny);
 medium.sound_speed     = c0   * ones(nx, ny);
 medium.sound_speed_ref = c0;
 
-medium.BonA        = medium.BonA + (11.00 - 6.00) * inclusion;
-medium.sound_speed = medium.sound_speed + (1500.0 - c0) * inclusion;
-
 % Time grid
 tEnd = 2.3 * (nx * dx) / c0;
 kgrid.makeTime(c0, [], tEnd);
@@ -128,12 +125,15 @@ if condition
     for f0 = freqs
         y_ref = 2.00;
         
-        a_bg_eff  = a_bg  * (f0/1e6)^(y_bg  - y_ref);
-        a_inc_eff = a_inc * (f0/1e6)^(y_inc - y_ref);
+        a_bg_eff  = a_bg  * f0^(y_bg  - y_ref);
+        a_inc_eff = a_inc * f0^(y_inc - y_ref);
     
         medium.alpha_power     = y_ref;
         medium.alpha_coeff     = a_bg_eff * ones(nx, ny);
         medium.alpha_coeff(inclusion > 0) = a_inc_eff;
+    
+        medium.BonA        = medium.BonA + (11.00 - 6.00) * inclusion;
+        medium.sound_speed = medium.sound_speed + (1500.0 - c0) * inclusion;
     
         medium.alpha_mode  = 'no_dispersion';
 
