@@ -142,7 +142,7 @@ if condition
     
         for steering_angle = steeringAngles
     
-            fprintf('=== f0 = %d MHz, angulo = %d grados ===\n', round(f0/1e6), steering_angle);
+            fprintf('f0 - %d MHz, angulo - %d grados\n', round(f0/1e6), steering_angle);
     
             % Offset base y retardo por elemento (dependen de frecuencia y ángulo)
             max_offset = elementSpacing * max(abs(element_index)) * ...
@@ -166,7 +166,7 @@ if condition
             for j=1:m
                 active_Elems = j:m:numElem;
                 pulseM = zeros(numel(active_Elems) * nPtsPerElem, size(pulseNorm, 2));
-                for idx = 1:numel(active_Elems)
+                for idx=1:numel(active_Elems)
                     e = active_Elems(idx);
                     rows = (idx-1)*nPtsPerElem + 1 : idx*nPtsPerElem;
                     pulseM(rows, :) = repmat(pulseNorm(e,:), nPtsPerElem, 1);
@@ -220,7 +220,7 @@ if condition
                 fprintf('  [f0=%dMHz][angulo %d][frame %d] apertura completa\n', ...
                     round(f0/1e6), steering_angle, frame);
 
-                 vdrive = single((sourceStrength / (c0 * rho0)) * pulseNormExpanded_full);
+                vdrive = single((sourceStrength / (c0 * rho0)) * pulseNormExpanded_full);
 
                 source.ux = vdrive;
                 source.u_mask = src_mask_full;

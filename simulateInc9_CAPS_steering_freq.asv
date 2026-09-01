@@ -43,6 +43,9 @@ medium.BonA            = 6.00 * ones(nx, ny);
 medium.sound_speed     = c0   * ones(nx, ny);
 medium.sound_speed_ref = c0;
 
+medium.BonA        = medium.BonA + (11.00 - 6.00) * inclusion;
+medium.sound_speed = medium.sound_speed + (1500.0 - c0) * inclusion;
+
 % Time grid
 tEnd = 2.3 * (nx * dx) / c0;
 kgrid.makeTime(c0, [], tEnd);
@@ -125,15 +128,12 @@ if condition
     for f0 = freqs
         y_ref = 2.00;
         
-        a_bg_eff  = a_bg  * f0^(y_bg  - y_ref);
-        a_inc_eff = a_inc * f0^(y_inc - y_ref);
+        a_bg_eff  = a_bg  * (f0/1e6)^(y_bg  - y_ref);
+        a_inc_eff = a_inc * (f0/1e6)^(y_inc - y_ref);
     
         medium.alpha_power     = y_ref;
         medium.alpha_coeff     = a_bg_eff * ones(nx, ny);
         medium.alpha_coeff(inclusion > 0) = a_inc_eff;
-    
-        medium.BonA        = medium.BonA + (11.00 - 6.00) * inclusion;
-        medium.sound_speed = medium.sound_speed + (1500.0 - c0) * inclusion;
     
         medium.alpha_mode  = 'no_dispersion';
 
@@ -142,7 +142,7 @@ if condition
     
         for steering_angle = steeringAngles
     
-            fprintf('=== f0 = %d MHz, angulo = %d grados ===\n', round(f0/1e6), steering_angle);
+            fprintf('f0 - %d MHz, angulo - %d grados\n', round(f0/1e6), steering_angle);
     
             % Offset base y retardo por elemento (dependen de frecuencia y ángulo)
             max_offset = elementSpacing * max(abs(element_index)) * ...
@@ -166,9 +166,9 @@ if condition
             for j=1:m
                 active_Elems = j:m:numElem;
                 pulseM = zeros(numel(active_Elems) * nPtsPerElem, size(pulseNorm, 2));
-                for idx = 1:numel(active_Elems)
-                    e = active_Elems(idx);
-                    rows = (idx-1)*nPtsPerElem + 1 : idx*nPtsPerElem;
+                for idx=1
+                    i = index(active_Elems(e));
+                    rows = (i-1)*nPtsPerElem + 1 : i*nPtsPerElem;
                     pulseM(rows, :) = repmat(pulseNorm(e,:), nPtsPerElem, 1);
                 end
                 pulseNormExpanded_sub{j} = pulseM;
