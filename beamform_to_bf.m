@@ -1,16 +1,4 @@
-%% beamform_to_bf.m (versión CAPS)
-% Suma coherentemente las m señales RF de subapertura de cada frame
-% (reconstruyendo la señal equivalente a "apertura completa a presión
-% m veces menor", ecuación 10 del paper de Avilés et al.), la usa como
-% señal de baja presión (LP), y beamformea también la transmisión de
-% apertura completa como señal de alta presión (HP).
-%
-% m se lee directamente de los archivos .mat generados por
-% simulateBgnd6_copia.m / simulateInc9_copia.m (versión CAPS), así que
-% no hace falta declararlo aquí: cada phantom puede haberse simulado con
-% un m distinto.
-
-baseDir = 'C:\Users\FRANCO PERALTA\Documents\MATLAB\LIM\CAPS\TAREA_CAPS';
+baseDir = sprintf(pwd,'FRECUENCIA-STEERING';
 probe   = 'L14-5u';
 freqStr = '7MHz';
 

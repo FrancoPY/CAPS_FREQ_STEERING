@@ -1,4 +1,4 @@
-sample = 'Phantom_homo_BA6_FrecSteering_v1';
+sample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
