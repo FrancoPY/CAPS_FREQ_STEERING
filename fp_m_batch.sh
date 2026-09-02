@@ -5,4 +5,4 @@
 #SBATCH --nodelist=worker7
 #SBATCH --output="CAPS_in_w1_generatedensitymapBgnd.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap_Bgnd";  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap_Bgnd;  exit"
