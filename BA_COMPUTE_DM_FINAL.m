@@ -1,23 +1,18 @@
-% Cómputo de B/A con CAPS (Complementary-Aperture Pulse Sequence).
-%
-% Diferencia clave respecto a la versión DM clásica: la señal "L"
-% (rfLp) ya NO es una adquisición física de baja presión, sino la suma
-% coherente de las m subaperturas (ver beamform_to_bf.m), que reconstruye
-% una señal equivalente a "apertura completa a presión ν≈m veces menor"
-% por construcción geométrica. Por eso aquí NO se multiplica por ningún
-% factor de escala v: la ecuación de depleción usa directamente
-% (P_L,Σ - P_H) en vez de (v*P_L - P_H), como indica la ecuación 12 del
-% paper de Avilés et al. El resto del método (calibración con phantom de
-% referencia, corrección por atenuación) es idéntico al DM clásico.
+refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
+samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
+freq = 7e6;
 
-refSample = 'Phantom_homo_BA6_Steering15_CAPS';
-samSample = 'Phantom_inc_BA11_Steering15_CAPS';
 
-refDir = 'C:\Users\FRANCO PERALTA\Documents\MATLAB\LIM\CAPS\TAREA_CAPS\Phantom_homo_BA6_Steering15_CAPS\L14-5u\7MHz\bf';
-samDir = 'C:\Users\FRANCO PERALTA\Documents\MATLAB\LIM\CAPS\TAREA_CAPS\Phantom_inc_BA11_Steering15_CAPS\L14-5u\7MHz\bf';
+probe = 'L14-5u';
+basedir = fullfile(pwd,'FRECUENCIA-STEERING');
+freqStr = sprintf('%dMHz',freq/1e6);
+angleStr = 'Angle_15';
+
+refDir = fullfile(basedir,refSample, probe, freqStr, 'bf', angleStr);
+samDir = fullfile(basedir,samSample, probe, freqStr, 'bf', angleStr);
 
 % Cargar la referencia
-ref_L0 = load(fullfile(refDir, 'Phantom_homo_BA6_Steering15_CAPS_f1_LP.mat'));
+ref_L0 = load(fullfile(refDir, sprintf('%s_f1_LP.mat',refSample)));
 fs = ref_L0.fs;
 zAxis = ref_L0.zAxis;
 xAxis = ref_L0.xAxis;
@@ -27,8 +22,8 @@ fprintf('m usado en la referencia: %d\n', ref_L0.m);
 
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
 
-f_fund = 7e6;
-f_fund_r = 7e6;
+f_fund = freq;
+f_fund_r = freq;
 
 alpha = 0.10*((f_fund/1e6)^2)*100/8.686;
 alpha_r = 0.10*((f_fund_r/1e6)^2)*100/8.686;

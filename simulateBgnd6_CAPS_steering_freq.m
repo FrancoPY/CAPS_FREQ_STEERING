@@ -153,7 +153,7 @@ if condition
                 pulseNormExpanded_sub{j} = pulseNormExpanded_M;
             end
     
-            outputDir = fullfile(pwd, 'FRECUENCIA-STEERING', sample, probe, freqStr, 'rf', ...
+            outputDir = fullfile(pwd, 'CAPS-FRECUENCIA-STEERING', sample, probe, freqStr, 'rf', ...
                 sprintf('Angle_%d', steering_angle));
             if ~exist(outputDir, 'dir'); mkdir(outputDir); end
     
