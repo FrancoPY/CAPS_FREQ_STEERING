@@ -95,44 +95,55 @@ muestras_ventana = round((2*10*lambda*fs)/c0);
 B_suave_axial = movmean(B_A, muestras_ventana, 1);
 B_final = movmean(B_suave_axial, 4, 2);
 
-% Visualización
-figure;
+% Crear carpeta para guardar las figuras
+figDir = fullfile(basedir, 'figuras');
+if ~exist(figDir, 'dir'); mkdir(figDir); end
+
+% Visualización B/A
+fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x*1000, z*1000, B_final);
 axis image; colormap(turbo); colorbar;
-title('Mapa B/A (CAPS, con steering)'); xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+title(sprintf('Mapa B/A (con steering) a frecuencia %s y %s', freqStr, angleStr));
+xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
-fila_inicio = find(z>=0.015, 1, 'first');
-fila_fin = find(z<=0.030, 1, 'last');
 
-media = mean(B_final(fila_inicio:fila_fin, :), 'all');
-fprintf('La media es: %.2f\n', media);
+% Guardar como PNG
+outNamePNG = fullfile(figDir, sprintf('BA_%s_%s.png', freqStr, angleStr));
+saveas(fig1, outNamePNG);
+close(fig1);
+fprintf('Figura B/A guardada en: %s\n', outNamePNG);
 
-% Visualización B-mode
-
+% Calcular B-mode (en dB) a partir del frame 1
 P_ref_L_Bmode = 20*log10(P_ref_L_frame1 / max(P_ref_L_frame1(:)));
 P_ref_H_Bmode = 20*log10(P_ref_H_frame1 / max(P_ref_H_frame1(:)));
 P_sam_L_Bmode = 20*log10(P_sam_L_frame1 / max(P_sam_L_frame1(:)));
 P_sam_H_Bmode = 20*log10(P_sam_H_frame1 / max(P_sam_H_frame1(:)));
 
-dynamicRange = 60;
+dynamicRange = 60;                                      
 
-figure;
+fig2 = figure('Visible', 'off');
 subplot(2,2,1); imagesc(x*1000, z*1000, P_ref_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title('B-mode Referencia \Sigma-subaperturas (Homo BA6)');
+title(sprintf('B-mode Referencia Low (Homo BA6) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,2); imagesc(x*1000, z*1000, P_ref_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title('B-mode Referencia Apertura completa (Homo BA6)');
+title(sprintf('B-mode Referencia High (Homo BA6) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,3); imagesc(x*1000, z*1000, P_sam_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title('B-mode Muestra \Sigma-subaperturas (Inc BA11)');
+title(sprintf('B-mode Muestra Low (Inc BA11) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,4); imagesc(x*1000, z*1000, P_sam_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title('B-mode Muestra Apertura completa (Inc BA11)');
+title(sprintf('B-mode Muestra High (Inc BA11) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+
+% Guardar como PNG
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_%s_%s.png', freqStr, angleStr));
+saveas(fig2, outNamePNG2);
+close(fig2);
+fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
