@@ -1,10 +1,10 @@
-sample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
+sample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
 
 Nx = 2000;
 Ny = 2000;
 
 sd = 0.02;
-nFrames = 6;
+nFrames = 1;
 
 outputDir = fullfile(pwd, 'densityMaps', sample);
 if ~exist(outputDir, 'dir'); mkdir(outputDir); end
