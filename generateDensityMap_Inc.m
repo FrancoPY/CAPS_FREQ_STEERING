@@ -1,19 +1,10 @@
-sample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
+sample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
 
 Nx = 2000;
 Ny = 2000;
-dx = 0.02e-3;
 
-sd_bg = 0.02;          % desviación estándar de fondo
-scatterBoost = 3;      % factor multiplicador dentro de la inclusión
-sd_inc = sd_bg * scatterBoost;
-
-nFrames = 6;
-
-% Geometría de la inclusión (debe coincidir con simulateInc9_copia.m)
-centerDepth = 22.5e-3;  % [m]
-radius = 7.5e-3;        % [m]
-inclusion = makeDisc(Nx, Ny, round(centerDepth/dx), Ny/2, round(radius/dx));
+sd = 0.02;
+nFrames = 1;
 
 outputDir = fullfile(pwd, 'densityMaps', sample);
 if ~exist(outputDir, 'dir'); mkdir(outputDir); end
@@ -27,16 +18,11 @@ for ii = 1:nFrames
         continue
     end
 
-    % Density de fondo
+    % Density
     rng('shuffle');
 
     density = 1000 * ones(Nx, Ny);
-    density = density + 1000 * sd_bg * randn(size(density));
-
-    % Refuerzo de dispersores dentro de la inclusión
-    extraNoise = 1000 * sd_inc * randn(size(density));
-    density(inclusion > 0) = 1000 + extraNoise(inclusion > 0);
-
+    density = density + 1000 * sd * randn(size(density));
     density = single(density);
 
     % Save

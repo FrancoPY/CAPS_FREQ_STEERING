@@ -1,12 +1,12 @@
 refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
 samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
-freq = 9e6;
+freq = 5e6;
 
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'FRECUENCIA-STEERING');
 freqStr = sprintf('%dMHz',freq/1e6);
-angleStr = 'Angle_15';
+angleStr = 'Angle_-5';
 
 refDir = fullfile(basedir,refSample, probe, freqStr, 'bf', angleStr);
 samDir = fullfile(basedir,samSample, probe, freqStr, 'bf', angleStr);
@@ -106,6 +106,7 @@ axis image; colormap(turbo); colorbar;
 title(sprintf('Mapa B/A (con steering) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
+ylim([0 40]);
 
 % Guardar como PNG
 outNamePNG = fullfile(figDir, sprintf('BA_%s_%s.png', freqStr, angleStr));
@@ -126,21 +127,25 @@ subplot(2,2,1); imagesc(x*1000, z*1000, P_ref_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Referencia Low (Homo BA6) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+ylim([0 40]);
 
 subplot(2,2,2); imagesc(x*1000, z*1000, P_ref_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Referencia High (Homo BA6) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+ylim([0 40]);
 
 subplot(2,2,3); imagesc(x*1000, z*1000, P_sam_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Muestra Low (Inc BA11) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+ylim([0 40]);
 
 subplot(2,2,4); imagesc(x*1000, z*1000, P_sam_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Muestra High (Inc BA11) a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+ylim([0 40]);
 
 % Guardar como PNG
 outNamePNG2 = fullfile(figDir, sprintf('Bmode_%s_%s.png', freqStr, angleStr));

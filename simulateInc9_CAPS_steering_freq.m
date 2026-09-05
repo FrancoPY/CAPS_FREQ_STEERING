@@ -2,7 +2,7 @@ sample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
-freqs = [5e6, 7e6, 9e6];
+freqs = [4e6, 5e6, 6e6];
 
 % Ángulos de steering [grados]
 steeringAngles = [-5, 0, 5, 10, 15];
@@ -12,7 +12,7 @@ m = 2;
 
 densityDir = fullfile(pwd, 'densityMaps', sample);
 
-nFrames = 6;
+nFrames = 1;
 dataCast = 'gpuArray-single';
 
 % Grid
