@@ -6,7 +6,7 @@ freq = 9e6;
 probe = 'L14-5u';
 basedir = fullfile(pwd,'FRECUENCIA-STEERING');
 freqStr = sprintf('%dMHz',freq/1e6);
-angleStr = 'Angle_5';
+angleStr = 'Angle_0';
 
 refDir = fullfile(basedir,refSample, probe, freqStr, 'bf', angleStr);
 samDir = fullfile(basedir,samSample, probe, freqStr, 'bf', angleStr);
