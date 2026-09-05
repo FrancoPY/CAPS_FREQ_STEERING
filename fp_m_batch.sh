@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker7
-#SBATCH --output="CAPS_in_w1_ComputeB/A.out"
+#SBATCH --output="CAPS_in_w2_GenerateDensityMap.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap_Inc;  exit"
