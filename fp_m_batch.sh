@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker7
-#SBATCH --output="CAPS_in_w2_beamforming.out"
+#SBATCH --output="CAPS_in_w2_BA_compute.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "beamform_to_bf;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL;  exit"

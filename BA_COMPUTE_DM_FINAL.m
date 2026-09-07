@@ -1,12 +1,12 @@
-refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v1';
-samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v1';
-freq = 9e6;
+refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
+samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
+freq = 4e6;
 
 
 probe = 'L14-5u';
-basedir = fullfile(pwd,'FRECUENCIA-STEERING');
+basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
 freqStr = sprintf('%dMHz',freq/1e6);
-angleStr = 'Angle_15';
+angleStr = 'Angle_-5';
 
 refDir = fullfile(basedir,refSample, probe, freqStr, 'bf', angleStr);
 samDir = fullfile(basedir,samSample, probe, freqStr, 'bf', angleStr);
@@ -44,7 +44,9 @@ P_ref_H_sum = 0;
 P_sam_L_sum = 0;
 P_sam_H_sum = 0;
 
-for i = 1:6
+nFrames = 1;
+
+for i = 1:nFrames
     % Cargar
     rL = load(fullfile(refDir, sprintf('%s_f%d_LP.mat', refSample, i)));
     rH = load(fullfile(refDir, sprintf('%s_f%d_HP.mat', refSample, i)));
@@ -77,10 +79,10 @@ for i = 1:6
 
 end
 
-P_ref_L_mean = P_ref_L_sum / 6;
-P_ref_H_mean = P_ref_H_sum / 6;
-P_sam_L_mean = P_sam_L_sum / 6;
-P_sam_H_mean = P_sam_H_sum / 6;
+P_ref_L_mean = P_ref_L_sum / nFrames;
+P_ref_H_mean = P_ref_H_sum / nFrames;
+P_sam_L_mean = P_sam_L_sum / nFrames;
+P_sam_H_mean = P_sam_H_sum / nFrames;
 
 % Calcular B/A (CAPS: sin factor v, ya está implícito en la suma coherente)
 numerador = (P_sam_L_mean - P_sam_H_mean).*(P_ref_L_mean);
