@@ -1,12 +1,12 @@
 refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
 samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
-freq = 4e6;
+freq = 5e6;
 
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
 freqStr = sprintf('%dMHz',freq/1e6);
-angleStr = 'Angle_15';
+angleStr = 'Angle_-5';
 
 refDir = fullfile(basedir,refSample, probe, freqStr, 'bf', angleStr);
 samDir = fullfile(basedir,samSample, probe, freqStr, 'bf', angleStr);
