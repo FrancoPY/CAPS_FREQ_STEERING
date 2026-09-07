@@ -1,6 +1,6 @@
 refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
 samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
-freq = 5e6;
+freq = 4e6;
 
 
 probe = 'L14-5u';
