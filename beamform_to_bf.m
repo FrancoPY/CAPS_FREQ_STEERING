@@ -1,17 +1,17 @@
-baseDir = fullfile(pwd,'FRECUENCIA-STEERING');
+baseDir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
 probe = 'L14-5u';
 
-freqs = [5e6, 7e6, 9e6];
+freqs = [4e6, 5e6, 6e6];
 steeringAngles = [-5, 0, 5, 10, 15];
 
-nFrames = 6;
+nFrames = 1;
 fNumber = 3;
 c0_bf   = 1500;
 
 % Lista de phantoms a procesar
 phantomNames = { ...
-    'Phantom_bgnd_BA6_CAPS_FreqSteering_v1', ...
-    'Phantom_inc_BA11_CAPS_FreqSteering_v1', ...
+    'Phantom_bgnd_BA6_CAPS_FreqSteering_v2', ...
+    'Phantom_inc_BA11_CAPS_FreqSteering_v2', ...
 };
 
 for p = 1:numel(phantomNames)
