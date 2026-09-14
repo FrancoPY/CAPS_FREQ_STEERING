@@ -1,6 +1,6 @@
-sample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
+sample = 'Simulation_CAPS_FreqSteering_v3';
 
-Nx = 2000;
+Nx = 2500;
 Ny = 2000;
 
 sd = 0.02;

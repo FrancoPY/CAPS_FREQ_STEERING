@@ -1,6 +1,6 @@
-refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
-samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
-freq = 6e6;
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
+freq = 6e6; %este es el que cambia
 
 
 probe = 'L14-5u';

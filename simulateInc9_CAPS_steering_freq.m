@@ -1,4 +1,5 @@
-sample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
+sample_density = 'Simulation_CAPS_FreqSteering_v3';
+sample = 'Simulation_Inc_CAPS_FreqSteering_v3';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
@@ -10,7 +11,7 @@ steeringAngles = [-5, 0, 5, 10, 15];
 % m subaperturas
 m = 2;
 
-densityDir = fullfile(pwd, 'densityMaps', sample);
+densityDir = fullfile(pwd, 'densityMaps', sample_density);
 
 nFrames = 1;
 dataCast = 'gpuArray-single';
@@ -19,7 +20,7 @@ dataCast = 'gpuArray-single';
 pmlXSize = 25;
 pmlYSize = 25;
 
-nx = 2000;
+nx = 2500;
 ny = 2000;
 
 dx = 0.02e-3; % tamaño de un punto de grilla [m]
