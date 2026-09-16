@@ -56,8 +56,8 @@ function bfData = bfPlaneWaveSimu(sensorDataKWave, fs, fNumber, steeringAngle, s
             zPoint = depthAxis(iz);
 
             % Delays
-            projDist = zPoint * cos(steerRad) + xPoint * sin(steerRad);
-            rxDist = sqrt(zPoint^2 + (xPoint - elemPos).^2);
+            projDist = zPoint * cos(steerRad) + xPoint * sin(steerRad); %tiempo de ida
+            rxDist = sqrt(zPoint^2 + (xPoint - elemPos).^2); % tiempo de vuelta (con retraso)
             totalTau = (projDist + rxDist) / soundSpeed;
 
             idx = round(totalTau * fs) + offsetBaseSamples + 1;
