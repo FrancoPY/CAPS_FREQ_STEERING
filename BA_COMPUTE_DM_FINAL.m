@@ -120,13 +120,14 @@ P_sam_H_meanAngles = P_sam_H_acumu / length(angles);
     
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
+idxEnd   = find(z <= 50e-3, 1, 'last'); 
 
-z_crop  = z(idxStart:end);
-BA_mean = BA_mean(idxStart:end, :);
-P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:end, :);
-P_ref_H_meanAngles = P_ref_H_meanAngles(idxStart:end, :);
-P_sam_L_meanAngles = P_sam_L_meanAngles(idxStart:end, :);
-P_sam_H_meanAngles = P_sam_H_meanAngles(idxStart:end, :);
+z_crop  = z(idxStart:idxEnd);
+BA_mean = BA_mean(idxStart:idxEnd, :);
+P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:idxEnd, :);
+P_ref_H_meanAngles = P_ref_H_meanAngles(idxStart:idxEnd, :);
+P_sam_L_meanAngles = P_sam_L_meanAngles(idxStart:idxEnd, :);
+P_sam_H_meanAngles = P_sam_H_meanAngles(idxStart:idxEnd, :);
 
 refMax = max(P_ref_L_meanAngles(:));
 P_ref_L_Bmode = 20*log10(P_ref_L_meanAngles / refMax);
@@ -144,8 +145,6 @@ imagesc(x*1000, z_crop*1000, BA_mean);
 axis image; colormap(turbo); colorbar;
 title(sprintf('Mapa B/A (con steering) a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
-clim([5 12]);
-ylim([0 40]);
 
 % Guardar como PNG
 outNamePNG = fullfile(figDir, sprintf('BA_%s_mean_angles.png', freqStr));
