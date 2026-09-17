@@ -23,7 +23,7 @@ P_ref_L_acumu = 0;
 P_ref_H_acumu = 0;
 P_sam_L_acumu = 0;
 P_sam_H_acumu = 0;
-N = 18326;
+N = 18325;
 
 for a=1:length(angles)
     angleStr = angles{a};
