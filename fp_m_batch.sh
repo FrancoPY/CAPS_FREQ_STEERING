@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker10
-#SBATCH --output="CAPS_in_w3_simuateBgnd.out"
+#SBATCH --output="CAPS_in_w3_beamforming.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "simulateBgnd6_CAPS_steering_freq;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "beamform_to_bf;  exit"
