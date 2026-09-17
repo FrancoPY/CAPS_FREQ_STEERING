@@ -107,7 +107,7 @@ for a=1:length(angles)
     BA_mean = BA_mean + B_final; 
 
     P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
-    P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
+    P_ref_h_acumu = P_ref_h_acumu + P_ref_h_frame1;
     P_sam_L_acumu = P_sam_L_acumu + P_sam_L_frame1;
     P_sam_H_acumu = P_sam_H_acumu + P_sam_H_frame1;
 end
@@ -117,7 +117,7 @@ P_ref_L_meanAngles = P_ref_L_acumu / length(angles);
 P_ref_H_meanAngles = P_ref_H_acumu / length(angles);
 P_sam_L_meanAngles = P_sam_L_acumu / length(angles);
 P_sam_H_meanAngles = P_sam_H_acumu / length(angles);
-    
+
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
 
@@ -125,13 +125,13 @@ z_crop  = z(idxStart:end);
 BA_mean = BA_mean(idxStart:end, :);
 P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:end, :);
 P_ref_H_meanAngles = P_ref_H_meanAngles(idxStart:end, :);
-P_sam_L_meanAngles = P_sam_L_meanAngles(idxStart:end, :);
+P_ref_L_meanAngles = P_sam_L_meanAngles(idxStart:end, :);
 P_sam_H_meanAngles = P_sam_H_meanAngles(idxStart:end, :);
 
 refMax = max(P_ref_L_meanAngles(:));
 P_ref_L_Bmode = 20*log10(P_ref_L_meanAngles / refMax);
-P_ref_H_Bmode = 20*log10(P_ref_H_meanAngles / refMax);
-P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
+P_ref_H_Bmode = 20*log10(P_ref_L_meanAngles / refMax);
+P_sam_L_Bmode = 20*log10(P_ref_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
@@ -140,7 +140,7 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
-imagesc(x*1000, z_crop*1000, BA_mean);
+imagesc(x*1000, z*1000, BA_mean);
 axis image; colormap(turbo); colorbar;
 title(sprintf('Mapa B/A (con steering) a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
@@ -158,28 +158,28 @@ fprintf('Figura B/A guardada en: %s\n', outNamePNG);
 dynamicRange = 60;                                      
 
 fig2 = figure('Visible', 'off');
-subplot(2,2,1); imagesc(x*1000, z_crop*1000, P_ref_L_Bmode);
+subplot(2,2,1); imagesc(x*1000, z*1000, P_ref_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title(sprintf('B-mode Referencia Low a frecuencia %s', freqStr));
+title(sprintf('B-mode Referencia Low a frecuencia %s y %s', freqStr, angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
-subplot(2,2,2); imagesc(x*1000, z_crop*1000, P_ref_H_Bmode);
+subplot(2,2,2); imagesc(x*1000, z*1000, P_ref_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Referencia High a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
-subplot(2,2,3); imagesc(x*1000, z_crop*1000, P_sam_L_Bmode);
+subplot(2,2,3); imagesc(x*1000, z*1000, P_sam_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Muestra Low a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
-subplot(2,2,4); imagesc(x*1000, z_crop*1000, P_sam_H_Bmode);
+subplot(2,2,4); imagesc(x*1000, z*1000, P_sam_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
 title(sprintf('B-mode Muestra High a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_%s_mean_angles.png', freqStr));
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_%s_%s.png', freqStr, angleStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
