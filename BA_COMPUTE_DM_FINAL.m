@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq = 6e6; %este es el que cambia
+freq = 4e6; %este es el que cambia
 
 
 probe = 'L14-5u';
