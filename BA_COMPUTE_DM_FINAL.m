@@ -145,6 +145,7 @@ imagesc(x*1000, z_crop*1000, BA_mean);
 axis image; colormap(turbo); colorbar;
 title(sprintf('Mapa B/A (con steering) a frecuencia %s', freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+clim([5 12]);
 
 % Guardar como PNG
 outNamePNG = fullfile(figDir, sprintf('BA_%s_mean_angles.png', freqStr));
