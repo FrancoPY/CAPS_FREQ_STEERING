@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = [4e6, 5e6, 6e6]; %este es el que cambia
+freq_vect = [4e6, 5e6, 6e6]; 
 
 
 probe = 'L14-5u';
