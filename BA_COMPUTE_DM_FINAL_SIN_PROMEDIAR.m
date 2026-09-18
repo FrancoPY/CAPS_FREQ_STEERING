@@ -100,7 +100,7 @@ B_final = movmean(B_suave_axial, 4, 2);
     
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
-idxEnd   = find(z <= 50e-3, 1, 'last'); 
+idxEnd   = find(z <= 40e-3, 1, 'last'); 
 
 z_crop  = z(idxStart:idxEnd);
 B_A = B_A(idxStart:idxEnd, :);
