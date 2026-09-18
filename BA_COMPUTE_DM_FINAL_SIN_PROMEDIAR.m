@@ -11,7 +11,7 @@ nFrames = 1;
     
 c0 = 1500;
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
-N = 15300;
+N = 13332;
 
 f_fund = freq;
 f_fund_r = freq;
