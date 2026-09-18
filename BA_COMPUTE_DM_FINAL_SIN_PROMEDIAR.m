@@ -1,5 +1,5 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v2';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v2';
+refSample = 'Simulation_Bgnd6_CAPS_FreqSteering_v2';
+samSample = 'Simulation_Inc9_CAPS_FreqSteering_v2';
 freq = 6e6; %este es el que cambia
 
 
