@@ -1,5 +1,5 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3.1';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v3.1';
 freq_vect = [4e6, 5e6, 6e6]; 
 
 
@@ -141,7 +141,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v3');
+figDir = fullfile(basedir, 'figuras_v3.1');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
