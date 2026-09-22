@@ -5,4 +5,4 @@
 #SBATCH --nodelist=worker7
 #SBATCH --output="CAPS_in_w3.1_BA_COMPUTE.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL_SIN_PROMEDIAR;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL;  exit"
