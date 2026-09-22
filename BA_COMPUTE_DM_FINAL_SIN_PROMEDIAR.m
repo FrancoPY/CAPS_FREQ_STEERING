@@ -1,5 +1,5 @@
-refSample = 'Phantom_bgnd_BA6_CAPS_FreqSteering_v2';
-samSample = 'Phantom_inc_BA11_CAPS_FreqSteering_v2';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
 freq = 6e6; %este es el que cambia
 
 
@@ -11,7 +11,7 @@ nFrames = 1;
     
 c0 = 1500;
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
-N = 13332;
+N = 18325;
 
 f_fund = freq;
 f_fund_r = freq;
@@ -100,7 +100,7 @@ B_final = movmean(B_suave_axial, 4, 2);
     
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
-idxEnd   = find(z <= 40e-3, 1, 'last'); 
+idxEnd   = find(z <= 50e-3, 1, 'last'); 
 
 z_crop  = z(idxStart:idxEnd);
 B_A = B_A(idxStart:idxEnd, :);
@@ -116,7 +116,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_mean / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_mean / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v2');
+figDir = fullfile(basedir, 'figuras_v3');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
