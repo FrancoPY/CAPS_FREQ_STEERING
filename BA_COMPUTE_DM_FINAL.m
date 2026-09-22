@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3.1';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3.1';
-freq_vect = [4e6, 5e6, 6e6]; 
+freq_vect = 4e6;
 
 
 probe = 'L14-5u';
@@ -148,12 +148,12 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x*1000, z_crop*1000, BA_mean);
 axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A (con steering) con promediado de todas las frecuencias y ángulos'));
+title(sprintf('Mapa B/A (con steering) con promediado de todos los ángulos y %s',freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_all_freq_mean_angles.png'));
+outNamePNG = fullfile(figDir, sprintf('BA_all_freq_%s.png',freqStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -165,26 +165,26 @@ dynamicRange = 60;
 fig2 = figure('Visible', 'off');
 subplot(2,2,1); imagesc(x*1000, z_crop*1000, P_ref_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title(sprintf('B-mode Referencia Low a frecuencia combinada'));
+title(sprintf('B-mode Referencia Low'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,2); imagesc(x*1000, z_crop*1000, P_ref_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title(sprintf('B-mode Referencia High a frecuencia combinada'));
+title(sprintf('B-mode Referencia High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,3); imagesc(x*1000, z_crop*1000, P_sam_L_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title(sprintf('B-mode Muestra Low a frecuencia combinada'));
+title(sprintf('B-mode Muestra Low'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 subplot(2,2,4); imagesc(x*1000, z_crop*1000, P_sam_H_Bmode);
 axis image; colormap gray; colorbar; clim([-dynamicRange 0]);
-title(sprintf('B-mode Muestra High a frecuencia combinada'));
+title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_freq_mean_angles.png'));
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_%s.png',freqStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
