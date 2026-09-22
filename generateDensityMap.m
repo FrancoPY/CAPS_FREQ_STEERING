@@ -1,9 +1,9 @@
-sample = 'Simulation_CAPS_FreqSteering_v3.1';
+sample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 
 Nx = 2500;
 Ny = 2000;
 
-sd = 0.05;
+sd = 0.02;
 nFrames = 1;
 
 outputDir = fullfile(pwd, 'densityMaps', sample);
