@@ -128,7 +128,7 @@ invParam.zInv     = [3.5e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 3;
+mu = 1;
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
 BA_final = BAloc.image;   % mapa LOCAL con TV, ya recortado 3.5-50mm
@@ -164,7 +164,7 @@ xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_all mean_mu3.png'));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_all mean_mu1.png'));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -195,7 +195,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_all_freq.png_mu3'));
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_all_freq.png_mu1'));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
