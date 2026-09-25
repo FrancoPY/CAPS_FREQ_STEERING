@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = [4e6, 5e6, 6e6];
+freq_vect = 5e6;
 
 
 probe = 'L14-5u';
@@ -148,12 +148,12 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x*1000, z_crop*1000, BA_mean);
 axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A (con steering) con promediado de todos los ángulos y freq'));
+title(sprintf('Mapa B/A (con steering) con promediado de todos los ángulos y %s',freqStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_all_freq_allangles.png'));
+outNamePNG = fullfile(figDir, sprintf('BA_all_freq_%s.png',freqStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -184,7 +184,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_all_freq.png'));
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_%s.png',freqStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
