@@ -159,12 +159,12 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
 axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A local (TV, \\mu=%.2g) — %s, ángulos promediados', mu, freqStr));
+title(sprintf('Mapa B/A local (TV, \\mu=%.2g), todo promediado', mu));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%s.png', freqStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_all mean.png'));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -195,7 +195,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_%s.png',freqStr));
+outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_all_freq.png'));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
