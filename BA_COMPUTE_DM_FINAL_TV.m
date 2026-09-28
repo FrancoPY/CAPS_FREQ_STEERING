@@ -164,7 +164,7 @@ xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_all mean_mu1.png'));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu0.1.png',freqStr,angleStr ));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
