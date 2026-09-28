@@ -1,11 +1,11 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = [4e6, 5e6, 6e6];
+freq_vect = 5e6;
 
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_-5', 'Angle_0', 'Angle_5', 'Angle_10', 'Angle_15'};
+angles = {'Angle_0'};
 
 nFrames = 1;
     
@@ -128,7 +128,7 @@ invParam.zInv     = [3.5e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 1;
+mu = 0.1;
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
 BA_final = BAloc.image;   % mapa LOCAL con TV, ya recortado 3.5-50mm
@@ -152,7 +152,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v3_TV');
+figDir = fullfile(basedir, 'figuras_v3_ceros_TV');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
