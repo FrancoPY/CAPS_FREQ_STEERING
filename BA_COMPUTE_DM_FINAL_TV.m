@@ -195,7 +195,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('Bmode_all_angles_all_freq.png_mu1'));
+outNamePNG2 = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu0.1.png',freqStr,angleStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
