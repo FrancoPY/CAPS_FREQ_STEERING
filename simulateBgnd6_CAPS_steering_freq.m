@@ -1,12 +1,12 @@
-sample_density = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
-sample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
+sample_density = 'Simulation_Bgnd_CAPS_FreqSteering_v4';
+sample = 'Simulation_Bgnd_CAPS_FreqSteering_v4';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
 freqs = [4e6, 5e6, 6e6];
 
 % Ángulos de steering [grados]
-steeringAngles = [-5, 0, 5, 10, 15];
+steeringAngles = [-15, -10, -5, 0, 5, 10, 15];
 
 m = 2;
 
