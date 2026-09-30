@@ -178,7 +178,7 @@ xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2_Pink.png',freqStr,angleStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -209,7 +209,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2_Pink.png',freqStr,angleStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
