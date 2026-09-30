@@ -130,8 +130,8 @@ BAeff.image   = BA_mean;   % B/AC completo
 BAeff.lateral = x;         % [m]
 BAeff.axial   = z;         % [m], eje completo (1:N)
 
-invParam.zCrop    = [3.5e-3, 50e-3];   % <-- aquí defines tu recorte 3.5-50mm
-invParam.zInv     = [3.5e-3, 50e-3];
+invParam.zCrop    = [10e-3, 50e-3];   % <-- aquí defines tu recorte 3.5-50mm
+invParam.zInv     = [10e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
@@ -167,7 +167,7 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
 axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', muStr,freqStr,angleStr));
+title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
