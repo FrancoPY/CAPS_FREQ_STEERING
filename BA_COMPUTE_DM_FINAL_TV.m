@@ -118,7 +118,10 @@ P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
 
 BA_mean = BA_mean / totalCombinaciones;
 
-% ---- Inversión local con TV (reemplaza el recorte manual del B/A) ----
+fprintf('B_A min=%.2f max=%.2f, #Inf=%d, #NaN=%d\n', ...
+    min(BA_mean(:)), max(BA_mean(:)), sum(isinf(BA_mean(:))), sum(isnan(BA_mean(:))));
+
+% Inversión local con TV (reemplaza el recorte manual del B/A)
 BAeff.image   = BA_mean;   % B/AC completo
 BAeff.lateral = x;         % [m]
 BAeff.axial   = z;         % [m], eje completo (1:N)
