@@ -1,11 +1,11 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = 4e6;
+freq_vect = 5e6;
 
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_0'};
+angles = {'Angle_-5'};
 
 nFrames = 1;
     
