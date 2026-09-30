@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker10
-#SBATCH --output="CAPS_in_w4_beamforming.out"
+#SBATCH --output="CAPS_in_w4_m4_generateDensityMap.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "beamform_to_bf;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap;  exit"
