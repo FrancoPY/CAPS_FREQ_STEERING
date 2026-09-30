@@ -135,7 +135,7 @@ invParam.zInv     = [10e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 1;
+mu = 0.3;
 muStr = sprintf('%d',mu);
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
