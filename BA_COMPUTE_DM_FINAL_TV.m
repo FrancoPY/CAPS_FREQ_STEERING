@@ -102,7 +102,7 @@ for freq = freq_vect
         B = B_r * sqrt(abs(ratio)) .* term;
         B_A = 2*(B - 1);
         
-        B_A(B_A < -5 | B_A > 25) = NaN;      % descarta valores fuera de rango físico razonable
+        B_A(B_A < -5 | B_A > 15) = NaN;      % descarta valores fuera de rango físico razonable
         B_A = fillmissing(B_A, 'linear', 1); % rellena esos NaN interpolando en la dirección axial
         B_A = fillmissing(B_A, 'linear', 2); % rellena lo que quede, interpolando lateralmente
         
