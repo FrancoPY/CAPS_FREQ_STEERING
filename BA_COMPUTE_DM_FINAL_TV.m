@@ -172,7 +172,7 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 % Visualización B/A
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
-axis image; colormap(turbo); colorbar;
+axis image; colormap("pink"); colorbar;
 title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
