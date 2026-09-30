@@ -135,7 +135,7 @@ invParam.zInv     = [3.5e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 0.3;
+mu = 1;
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
 BA_final = BAloc.image;   % mapa LOCAL con TV, ya recortado 3.5-50mm
