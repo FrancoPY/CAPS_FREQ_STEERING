@@ -102,7 +102,7 @@ for freq = freq_vect
         B = B_r * sqrt(abs(ratio)) .* term;
         B_A = 2*(B - 1);
         
-        B_A(B_A < -5 | B_A > 25) = NaN;      % descarta valores fuera de rango físico razonable
+        B_A(B_A < -3 | B_A > 12) = NaN;      % descarta valores fuera de rango físico razonable
         B_A = fillmissing(B_A, 'linear', 1); % rellena esos NaN interpolando en la dirección axial
         B_A = fillmissing(B_A, 'linear', 2); % rellena lo que quede, interpolando lateralmente
         
@@ -135,7 +135,8 @@ invParam.zInv     = [3.5e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 0.1;
+mu = 1;
+muStr = sprintf('%d',freq/1e6);
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
 BA_final = BAloc.image;   % mapa LOCAL con TV, ya recortado 3.5-50mm
@@ -166,12 +167,12 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
 axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A local (TV, \\mu=%.2g), todo promediado', mu));
+title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu0.1_V2.png',freqStr,angleStr ));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,mu));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -202,7 +203,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu0.1_V2.png',freqStr,angleStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,mu));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
