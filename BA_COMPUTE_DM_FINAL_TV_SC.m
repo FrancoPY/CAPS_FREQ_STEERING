@@ -105,14 +105,8 @@ for freq = freq_vect
         B_A(B_A < -3 | B_A > 12) = NaN;      % descarta valores fuera de rango físico razonable
         B_A = fillmissing(B_A, 'linear', 1); % rellena esos NaN interpolando en la dirección axial
         B_A = fillmissing(B_A, 'linear', 2); % rellena lo que quede, interpolando lateralmente
-
-        % Suavizado axial y lateral
-        lambda = c0/f_fund;
-        muestras_ventana = round((2*10*lambda*fs)/c0);
-        B_suave_axial = movmean(B_A, muestras_ventana, 1);
-        B_final = movmean(B_suave_axial, 4, 2);
         
-        BA_mean = BA_mean + B_final;
+        BA_mean = BA_mean + B_A;
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
         P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
