@@ -1,4 +1,4 @@
-sample_density = 'Simulation_CAPS_FreqSteering_v4';
+sample_density = 'Simulation_Inc_CAPS_FreqSteering_v4';
 sample = 'Simulation_Inc_CAPS_FreqSteering_v4';
 probe = 'L14-5u';
 

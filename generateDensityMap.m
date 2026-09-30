@@ -1,4 +1,4 @@
-sample = 'Simulation_Bgnd_CAPS_FreqSteering_v4';
+sample = 'Simulation_Inc_CAPS_FreqSteering_v4';
 
 Nx = 2500;
 Ny = 2000;
