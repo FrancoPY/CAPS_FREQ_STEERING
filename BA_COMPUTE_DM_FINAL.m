@@ -5,7 +5,7 @@ freq_vect = 6e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_-5', 'Angle_0', 'Angle_5', 'Angle_10', 'Angle_15'};
+angles = {'Angle_0'};
 
 nFrames = 1;
     
@@ -141,7 +141,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v3');
+figDir = fullfile(basedir, 'figuras_v3_ceros_TV');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A

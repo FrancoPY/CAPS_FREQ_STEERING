@@ -5,4 +5,4 @@
 #SBATCH --nodelist=worker10
 #SBATCH --output="CAPS_in_w3_computeBA_TV_Verificación.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL_TV;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "BA_COMPUTE_DM_FINAL;  exit"
