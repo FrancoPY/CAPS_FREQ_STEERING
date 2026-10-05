@@ -1,5 +1,5 @@
-sample_density = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
-sample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
+sample_density = 'Simulation_Bgnd_11_CAPS_FreqSteering_v4_m4';
+sample = 'Simulation_Bgnd_11_CAPS_FreqSteering_v4_m4';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
@@ -31,7 +31,7 @@ kgrid = kWaveGrid(nx, dx, ny, dy);
 c0   = 1500.0;
 rho0 = 1000;
 
-medium.BonA            = 6.00;
+medium.BonA            = 11.00;
 medium.sound_speed     = c0;
 medium.sound_speed_ref = c0;
 medium.alpha_coeff     = 0.1;
