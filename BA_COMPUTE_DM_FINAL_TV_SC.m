@@ -4,7 +4,7 @@ freq_vect = 4e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_5'};
+angles = {'Angle_-15','Angle_-10','Angle_-5','Angle_0','Angle_5','Angle_10','Angle_15'};
 
 nFrames = 1;
     
