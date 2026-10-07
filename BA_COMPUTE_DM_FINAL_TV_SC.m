@@ -1,17 +1,17 @@
-refSample = 'Simulation_Bgnd_11_CAPS_FreqSteering_v4_m4';
-samSample = 'Simulation_Inc_6_CAPS_FreqSteering_v4_m4';
-freq_vect = 6e6;
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
+freq_vect = 5e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_0'};
+angles = {'Angle_-5','Angle_0','Angle_5'};
 
 nFrames = 1;
     
 c0 = 1500;
-B_r = 6.5;     % beta de referencia (calibrado con B/A_ref = 11)
+B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
 
-zMaxProc = 55e-3; %de la inversión
+zMaxProc = 55e-3;
 mu = 0.1;
 invParam.zCrop = [10e-3 51e-3];  invParam.zInv = [10e-3 51e-3];   % se invierte hasta 51 mm...
 invParam.zOut  = [10e-3 50e-3];   
@@ -168,7 +168,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v4_Mamo_TV');
+figDir = fullfile(basedir, 'figuras_v4_TV');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
@@ -177,7 +177,7 @@ imagesc(x_crop*1000, z_crop*1000, BA_final);
 axis image; colormap("pink"); colorbar;
 title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
-clim([4 13]);
+clim([5 12]);
 
 % Guardar como PNG
 outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink1.png',freqStr,angStr,muStr));
