@@ -8,7 +8,7 @@ freqs = [4e6, 5e6, 6e6];
 % Ángulos de steering [grados]
 steeringAngles = [-15, -10, -5, 0, 5, 10, 15];
 
-m = 4;
+m = 2;
 
 densityDir = fullfile(pwd, 'densityMaps', sample_density);
 
@@ -154,7 +154,7 @@ if condition
                 pulseNormExpanded_sub{j} = pulseNormExpanded_M;
             end
     
-            outputDir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING', 'V5_m4', sample, probe, freqStr, 'rf', ...
+            outputDir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING', 'V5_m2', sample, probe, freqStr, 'rf', ...
                 sprintf('Angle_%d', steering_angle));
             if ~exist(outputDir, 'dir'); mkdir(outputDir); end
     
