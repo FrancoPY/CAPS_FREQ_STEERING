@@ -16,7 +16,7 @@ mu = 0.1;
 invParam.zCrop = [10e-3 46e-3];  invParam.zInv = [10e-3 46e-3];   % se invierte hasta 51 mm...
 invParam.zOut  = [10e-3 45e-3];   
 invParam.gridSize = 0.3e-3;      invParam.plotFlag = false;
-BAL_sum = [];  BAL_count = [];
+BAL_sum = [];
 
 P_ref_L_acumu = 0;
 P_ref_H_acumu = 0;
@@ -122,11 +122,11 @@ for freq = freq_vect
         BAL_theta = invertLocalBA_Steered(BAeff_theta, mu, invParam, thetaDeg);
         
         if isempty(BAL_sum)
-            BAL_sum = zeros(size(BAL_theta.image));  BAL_count = BAL_sum;
+            BAL_sum = zeros(size(BAL_theta.image));
             x_crop = BAL_theta.lateral;  z_crop = BAL_theta.axial;
         end
         
-        BAL_sum = BAL_sum + tmp;  BAL_count = BAL_count + ok;
+        BAL_sum = BAL_sum + BAL_theta.image;
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
         P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
@@ -140,7 +140,7 @@ P_ref_H_meanAngles = P_ref_H_acumu / totalCombinaciones;
 P_sam_L_meanAngles = P_sam_L_acumu / totalCombinaciones;
 P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
 
-BA_final = BAL_sum ./ BAL_count;
+BA_final = BAL_sum / numel(angles);
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 muStr = sprintf('%g', mu);
