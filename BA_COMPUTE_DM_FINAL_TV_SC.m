@@ -4,14 +4,14 @@ freq_vect = 4e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_-15','Angle_-10','Angle_-5','Angle_0','Angle_5','Angle_10','Angle_15'};
+angles = {'Angle_-15'};
 
 nFrames = 1;
     
 c0 = 1500;
 B_r = 6.5;     % beta de referencia (calibrado con B/A_ref = 11)
 
-zMaxProc = 55e-3;
+zMaxProc = 55e-3; %de la inversión
 mu = 0.1;
 invParam.zCrop = [10e-3 51e-3];  invParam.zInv = [10e-3 51e-3];   % se invierte hasta 51 mm...
 invParam.zOut  = [10e-3 50e-3];   
