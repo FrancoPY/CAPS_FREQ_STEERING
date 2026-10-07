@@ -59,10 +59,7 @@ function BAL = invertLocalBA_Steered(BAeff, mu, invParam, thetaDeg)
         error('invertLocalBA_Steered: ningun rayo cae dentro de la imagen (theta=%g).', thetaDeg);
     end
 
-    % invertBAeffTV no tolera NaN (la TV los propagaria a toda la imagen):
-    % se rellenan con el vecino mas cercano y se enmascaran al final.
-    Cfill = fillmissing(Cray, 'nearest', 1);
-    Cfill = fillmissing(Cfill, 'nearest', 2);
+    Cfill = Cray;  Cfill(isnan(Cfill)) = 0;
 
     % ---- 2) Inversion local con TV, columna a columna (rayo a rayo) --------
     BAeffRay.image   = Cfill;
@@ -76,8 +73,8 @@ function BAL = invertLocalBA_Steered(BAeff, mu, invParam, thetaDeg)
     validLoc  = interp2(x0, ell, double(valid), XL, LL, 'linear', 0);
 
     % ---- 3) Volver al marco original (x,z) ---------------------------------
-    xOut = x(1):gridSize:x(end);
-    zOut = (zCrop(1):gridSize:zCrop(2)).';
+    xOut = BAloc.lateral;
+    zOut = BAloc.axial(:);
     [XO, ZO] = meshgrid(xOut, zOut);
 
     Lq  = ZO ./ cT;          % profundidad a lo largo del rayo
@@ -85,7 +82,8 @@ function BAL = invertLocalBA_Steered(BAeff, mu, invParam, thetaDeg)
 
     img_out = interp2(BAloc.lateral, BAloc.axial, BAloc.image, X0q, Lq, 'linear', NaN);
     v_out   = interp2(BAloc.lateral, BAloc.axial, validLoc,    X0q, Lq, 'linear', 0);
-    img_out(v_out < 0.999) = NaN;
+    img_out(v_out < 0.999) = 0;      % fuera de la zona válida -> 0 (como el padding del paper)
+    img_out(isnan(img_out)) = 0;     % lo que quede fuera de la grilla de rayos también 0
 
     BAL.image   = img_out;
     BAL.lateral = xOut;
