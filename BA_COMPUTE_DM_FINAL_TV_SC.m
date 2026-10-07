@@ -1,5 +1,5 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v4';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
 freq_vect = 5e6;
 
 probe = 'L14-5u';
@@ -13,8 +13,8 @@ B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
 
 zMaxProc = 55e-3;
 mu = 0.1;
-invParam.zCrop = [10e-3 46e-3];  invParam.zInv = [10e-3 46e-3];   % se invierte hasta 51 mm...
-invParam.zOut  = [10e-3 45e-3];   
+invParam.zCrop = [10e-3 51e-3];  invParam.zInv = [10e-3 51e-3];   % se invierte hasta 51 mm...
+invParam.zOut  = [10e-3 50e-3];   
 invParam.gridSize = 0.3e-3;      invParam.plotFlag = false;
 BAL_sum = [];
 
@@ -125,7 +125,6 @@ for freq = freq_vect
             BAL_sum = zeros(size(BAL_theta.image));
             x_crop = BAL_theta.lateral;  z_crop = BAL_theta.axial;
         end
-        
         BAL_sum = BAL_sum + BAL_theta.image;
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
@@ -153,7 +152,7 @@ end
     
 % Recorte de las imágenes
 idxStart = find(z >= 10e-3, 1, 'first');
-idxEnd   = find(z <= 45e-3, 1, 'last'); 
+idxEnd   = find(z <= 50e-3, 1, 'last'); 
 z_crop_bmode = z(idxStart:idxEnd);
 
 P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:idxEnd, :);
@@ -168,7 +167,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v4_TV_m2');
+figDir = fullfile(basedir, 'figuras_v4_TV');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
@@ -180,7 +179,7 @@ xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink1.png',freqStr,angStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink2.png',freqStr,angStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -211,7 +210,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%s_%s_mu%s_V4_Pink1.png',freqStr,angStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%s_%s_mu%s_V4_Pink2.png',freqStr,angStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
