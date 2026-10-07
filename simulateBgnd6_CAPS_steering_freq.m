@@ -1,5 +1,5 @@
 sample_density = 'Simulation_Bgnd_CAPS_FreqSteering_v5';
-sample = 'Simulation_Bgnd_CAPS_FreqSteering_v5';
+sample = 'Simulation_Bgnd_CAPS_FreqSteering_v5_m2';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
@@ -154,7 +154,7 @@ if condition
                 pulseNormExpanded_sub{j} = pulseNormExpanded_M;
             end
     
-            outputDir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING', 'V5_m2', sample, probe, freqStr, 'rf', ...
+            outputDir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING', sample, probe, freqStr, 'rf', ...
                 sprintf('Angle_%d', steering_angle));
             if ~exist(outputDir, 'dir'); mkdir(outputDir); end
     
