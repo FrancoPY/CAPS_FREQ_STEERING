@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
-freq_vect = 5e6;
+freq_vect = 4e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
@@ -179,7 +179,7 @@ xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink1.png',freqStr,angStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -210,7 +210,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%s_%s_mu%s_V4_Pink1.png',freqStr,angStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
