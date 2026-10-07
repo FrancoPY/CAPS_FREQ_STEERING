@@ -1,10 +1,10 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v4';
 freq_vect = 5e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_-5','Angle_0','Angle_5'};
+angles = {'Angle_-15','Angle_-10','Angle_-5','Angle_0','Angle_5','Angle_10','Angle_15'};
 
 nFrames = 1;
     
@@ -168,7 +168,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v4_TV');
+figDir = fullfile(basedir, 'figuras_v4_TV_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
