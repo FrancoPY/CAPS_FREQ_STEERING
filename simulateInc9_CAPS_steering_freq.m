@@ -1,5 +1,5 @@
-sample_density = 'Simulation_Inc_6_CAPS_FreqSteering_v4_m4';
-sample = 'Simulation_Inc_6_CAPS_FreqSteering_v4_m4';
+sample_density = 'Simulation_Inc_CAPS_FreqSteering_v5';
+sample = 'Simulation_Inc_CAPS_FreqSteering_v5_m4';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
@@ -40,11 +40,11 @@ rho0 = 1000;
 a_bg  = 0.10;   y_bg  = 2.00;
 a_inc = 0.10;   y_inc = 2.00;
 
-medium.BonA            = 11.00 * ones(nx, ny);
+medium.BonA            = 6.00 * ones(nx, ny);
 medium.sound_speed     = c0   * ones(nx, ny);
 medium.sound_speed_ref = c0;
 
-medium.BonA        = medium.BonA + (6.00 - 11.00) * inclusion;
+medium.BonA        = medium.BonA + (11.00 - 6.00) * inclusion;
 medium.sound_speed = medium.sound_speed + (1500.0 - c0) * inclusion;
 
 % Time grid
