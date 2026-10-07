@@ -168,7 +168,7 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v4_TV');
+figDir = fullfile(basedir, 'figuras_v4_TV_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
