@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker8
-#SBATCH --output="CAPS_in_w5_generateDensityMap_param2ym4.out"
+#SBATCH --output="CAPS_in_w5_simulate_para_m2.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "simulateBgnd6_CAPS_steering_freq;  exit"
