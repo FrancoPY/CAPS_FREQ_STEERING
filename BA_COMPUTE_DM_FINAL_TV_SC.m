@@ -142,7 +142,12 @@ BA_final = BAL_sum ./ BAL_count;
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 muStr = sprintf('%g', mu);
-angStr = sprintf('SC%dang', length(angles));
+
+if numel(angles) == 1
+    angStr = angles{1};   
+else
+    angStr = sprintf('SC%dang', numel(angles));
+end
     
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
