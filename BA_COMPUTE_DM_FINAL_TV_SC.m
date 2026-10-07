@@ -1,6 +1,6 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = 6e6;
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
+freq_vect = 5e6;
 
 
 probe = 'L14-5u';
@@ -12,12 +12,15 @@ nFrames = 1;
 c0 = 1500;
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
 
-BA_mean = 0;
 P_ref_L_acumu = 0;
 P_ref_H_acumu = 0;
 P_sam_L_acumu = 0;
 P_sam_H_acumu = 0;
-N = 18325;
+zMaxProc = 55e-3;
+mu = 0.3;
+invParam.zCrop = [10e-3 50e-3];  invParam.zInv = [10e-3 50e-3];
+invParam.gridSize = 0.3e-3;      invParam.plotFlag = false;
+BAL_sum = [];  BAL_count = [];
 
 totalCombinaciones = length(freq_vect) * length(angles);   
 
@@ -37,7 +40,9 @@ for freq = freq_vect
     
         % Cargar la referencia
         ref_L0 = load(fullfile(refDir, sprintf('%s_f1_LP.mat',refSample)));
+        thetaDeg = angleStrToDeg(angleStr);
         fs = ref_L0.fs;
+        N = min(round(2*zMaxProc*fs/c0), size(ref_L0.rfLp,1));
         zAxis = ref_L0.zAxis;
         xAxis = ref_L0.xAxis;
         
@@ -102,11 +107,25 @@ for freq = freq_vect
         B = B_r * sqrt(abs(ratio)) .* term;
         B_A = 2*(B - 1);
         
-        B_A(B_A < -3 | B_A > 12) = NaN;      % descarta valores fuera de rango físico razonable
+        B_A(B_A < -3 | B_A > 25) = NaN;      % descarta valores fuera de rango físico razonable
         B_A = fillmissing(B_A, 'linear', 1); % rellena esos NaN interpolando en la dirección axial
         B_A = fillmissing(B_A, 'linear', 2); % rellena lo que quede, interpolando lateralmente
+
+        % Suavizado axial y lateral
+        lambda = c0/f_fund;
+        muestras_ventana = round((2*10*lambda*fs)/c0);
+        B_suave_axial = movmean(B_A, muestras_ventana, 1);
+        B_final = movmean(B_suave_axial, 4, 2);
         
-        BA_mean = BA_mean + B_A;
+        BAeff_theta.image = B_final;  BAeff_theta.lateral = x;  BAeff_theta.axial = z;
+        BAL_theta = invertLocalBA_Steered(BAeff_theta, mu, invParam, thetaDeg);
+        
+        if isempty(BAL_sum)
+            BAL_sum = zeros(size(BAL_theta.image));  BAL_count = BAL_sum;
+            x_crop = BAL_theta.lateral;  z_crop = BAL_theta.axial;
+        end
+        ok = ~isnan(BAL_theta.image);  tmp = BAL_theta.image;  tmp(~ok) = 0;
+        BAL_sum = BAL_sum + tmp;  BAL_count = BAL_count + ok;
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
         P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
@@ -120,28 +139,11 @@ P_ref_H_meanAngles = P_ref_H_acumu / totalCombinaciones;
 P_sam_L_meanAngles = P_sam_L_acumu / totalCombinaciones;
 P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
 
-BA_mean = BA_mean / totalCombinaciones;
-
-fprintf('B_A min=%.2f max=%.2f, #Inf=%d, #NaN=%d\n', ...
-    min(BA_mean(:)), max(BA_mean(:)), sum(isinf(BA_mean(:))), sum(isnan(BA_mean(:))));
-
-% Inversión local con TV (reemplaza el recorte manual del B/A)
-BAeff.image   = BA_mean;   % B/AC completo
-BAeff.lateral = x;         % [m]
-BAeff.axial   = z;         % [m], eje completo (1:N)
-
-invParam.zCrop    = [10e-3, 50e-3];   % <-- aquí defines tu recorte 3.5-50mm
-invParam.zInv     = [10e-3, 50e-3];
-invParam.gridSize = 0.3e-3;
-invParam.plotFlag = false;
-
-mu = 0.3;
-muStr = sprintf('%d',mu);
-BAloc = invertBAeffTV(BAeff, mu, invParam);
-
-BA_final = BAloc.image;   % mapa LOCAL con TV, ya recortado 3.5-50mm
-z_crop   = BAloc.axial;   % eje z que corresponde a BA_final (nueva grilla)
-x_crop   = BAloc.lateral; % eje x que corresponde a BA_final
+BA_final = BAL_sum ./ BAL_count;
+fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
+    min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
+muStr = sprintf('%g', mu);
+angStr = sprintf('SC%dang', length(angles));
     
 % Recorte de las imágenes
 idxStart = find(z >= 3.5e-3, 1, 'first');
@@ -160,19 +162,19 @@ P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v3_ceros_TV');
+figDir = fullfile(basedir, 'figuras_v4_TV');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 % Visualización B/A
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
-axis image; colormap(turbo); colorbar;
-title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angleStr));
+axis image; colormap("pink"); colorbar;
+title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -203,7 +205,12 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
+
+
+function thetaDeg = angleStrToDeg(s)
+    thetaDeg = str2double(strrep(s,'Angle_',''));
+end

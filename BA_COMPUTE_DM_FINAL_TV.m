@@ -1,11 +1,11 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v3';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v3';
-freq_vect = 5e6;
+freq_vect = 6e6;
 
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_15'};
+angles = {'Angle_0'};
 
 nFrames = 1;
     
@@ -105,14 +105,8 @@ for freq = freq_vect
         B_A(B_A < -3 | B_A > 12) = NaN;      % descarta valores fuera de rango físico razonable
         B_A = fillmissing(B_A, 'linear', 1); % rellena esos NaN interpolando en la dirección axial
         B_A = fillmissing(B_A, 'linear', 2); % rellena lo que quede, interpolando lateralmente
-
-        % Suavizado axial y lateral
-        lambda = c0/f_fund;
-        muestras_ventana = round((2*10*lambda*fs)/c0);
-        B_suave_axial = movmean(B_A, muestras_ventana, 1);
-        B_final = movmean(B_suave_axial, 4, 2);
         
-        BA_mean = BA_mean + B_final;
+        BA_mean = BA_mean + B_A;
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
         P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
@@ -141,7 +135,7 @@ invParam.zInv     = [10e-3, 50e-3];
 invParam.gridSize = 0.3e-3;
 invParam.plotFlag = false;
 
-mu = 0.1;
+mu = 0.3;
 muStr = sprintf('%d',mu);
 BAloc = invertBAeffTV(BAeff, mu, invParam);
 
@@ -172,13 +166,13 @@ if ~exist(figDir, 'dir'); mkdir(figDir); end
 % Visualización B/A
 fig1 = figure('Visible', 'off');   % <-- 'off' porque no hay pantalla en el cluster
 imagesc(x_crop*1000, z_crop*1000, BA_final);
-axis image; colormap("pink"); colorbar;
+axis image; colormap(turbo); colorbar;
 title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angleStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2_Pink.png',freqStr,angleStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -209,7 +203,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2_Pink.png',freqStr,angleStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_TV_%sMHz y %s grados_mu%s_V2.png',freqStr,angleStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
