@@ -73,11 +73,12 @@ function BAL = invertLocalBA_Steered(BAeff, mu, invParam, thetaDeg)
     validLoc  = interp2(x0, ell, double(valid), XL, LL, 'linear', 0);
 
     % ---- 3) Volver al marco original (x,z) ---------------------------------
+    zOutR = getOptionLocal(invParam, 'zOut', [10e-3 50e-3]);
     xOut = BAloc.lateral;
-    zOut = BAloc.axial(:);
+    zOut  = linspace(zOutR(1), zOutR(2), round((zOutR(2)-zOutR(1))/gridSize)+1).';
     [XO, ZO] = meshgrid(xOut, zOut);
 
-    Lq  = ZO ./ cT;          % profundidad a lo largo del rayo
+    Lq  = max(ZO ./ cT, BAloc.axial(1));          % profundidad a lo largo del rayo
     X0q = XO - ZO .* tT;     % donde entro ese rayo
 
     img_out = interp2(BAloc.lateral, BAloc.axial, BAloc.image, X0q, Lq, 'linear', NaN);
