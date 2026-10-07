@@ -11,10 +11,10 @@ nFrames = 1;
 c0 = 1500;
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
 
-zMaxProc = 45e-3;
+zMaxProc = 55e-3;
 mu = 0.1;
-invParam.zCrop = [10e-3 41e-3];  invParam.zInv = [10e-3 41e-3];   % se invierte hasta 51 mm...
-invParam.zOut  = [10e-3 40e-3];   
+invParam.zCrop = [10e-3 51e-3];  invParam.zInv = [10e-3 51e-3];   % se invierte hasta 51 mm...
+invParam.zOut  = [10e-3 50e-3];   
 invParam.gridSize = 0.3e-3;      invParam.plotFlag = false;
 BAL_sum = [];
 
@@ -152,7 +152,7 @@ end
     
 % Recorte de las imágenes
 idxStart = find(z >= 10e-3, 1, 'first');
-idxEnd   = find(z <= 40e-3, 1, 'last'); 
+idxEnd   = find(z <= 50e-3, 1, 'last'); 
 z_crop_bmode = z(idxStart:idxEnd);
 
 P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:idxEnd, :);
