@@ -1,5 +1,5 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v4_m4';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v4_m4';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v5_m2';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v5_m2';
 freq_vect = 4e6;
 
 probe = 'L14-5u';
@@ -16,7 +16,7 @@ mu = 0.1;
 invParam.zCrop = [10e-3 51e-3];  invParam.zInv = [10e-3 51e-3];   % se invierte hasta 51 mm...
 invParam.zOut  = [10e-3 50e-3];   
 invParam.gridSize = 0.3e-3;      invParam.plotFlag = false;
-BAL_sum = [];
+BAL_sum = [];  BAL_count = []; 
 
 P_ref_L_acumu = 0;
 P_ref_H_acumu = 0;
@@ -122,10 +122,12 @@ for freq = freq_vect
         BAL_theta = invertLocalBA_Steered(BAeff_theta, mu, invParam, thetaDeg);
         
         if isempty(BAL_sum)
-            BAL_sum = zeros(size(BAL_theta.image));
+            BAL_sum = zeros(size(BAL_theta.image));  BAL_count = BAL_sum; 
             x_crop = BAL_theta.lateral;  z_crop = BAL_theta.axial;
         end
-        BAL_sum = BAL_sum + BAL_theta.image;
+        ok = ~isnan(BAL_theta.image);  tmp = BAL_theta.image;  tmp(~ok) = 0;
+
+        BAL_sum = BAL_sum + tmp;  BAL_count = BAL_count + ok;  
     
         P_ref_L_acumu = P_ref_L_acumu + P_ref_L_frame1;
         P_ref_H_acumu = P_ref_H_acumu + P_ref_H_frame1;
@@ -139,7 +141,7 @@ P_ref_H_meanAngles = P_ref_H_acumu / totalCombinaciones;
 P_sam_L_meanAngles = P_sam_L_acumu / totalCombinaciones;
 P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
 
-BA_final = BAL_sum / numel(angles);
+BA_final = BAL_sum ./ BAL_count; 
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 muStr = sprintf('%g', mu);

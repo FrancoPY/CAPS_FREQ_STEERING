@@ -83,8 +83,7 @@ function BAL = invertLocalBA_Steered(BAeff, mu, invParam, thetaDeg)
 
     img_out = interp2(BAloc.lateral, BAloc.axial, BAloc.image, X0q, Lq, 'linear', NaN);
     v_out   = interp2(BAloc.lateral, BAloc.axial, validLoc,    X0q, Lq, 'linear', 0);
-    img_out(v_out < 0.999) = 0;      % fuera de la zona válida -> 0 (como el padding del paper)
-    img_out(isnan(img_out)) = 0;     % lo que quede fuera de la grilla de rayos también 0
+    img_out(v_out < 0.999) = NaN;      % fuera de la zona válida -> 0 (como el padding del paper)
 
     BAL.image   = img_out;
     BAL.lateral = xOut;
