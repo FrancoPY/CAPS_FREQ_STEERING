@@ -1,5 +1,5 @@
 sample_density = 'Simulation_Inc_CAPS_FreqSteering_v5';
-sample = 'Simulation_Inc_CAPS_FreqSteering_v5_m2';
+sample = 'Simulation_Inc_CAPS_FreqSteering_v5_m4';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
@@ -9,7 +9,7 @@ freqs = [4e6, 5e6, 6e6];
 steeringAngles = [-15, -10, -5, 0, 5, 10, 15];
 
 % m subaperturas
-m = 2;
+m = 4;
 
 densityDir = fullfile(pwd, 'densityMaps', sample_density);
 
