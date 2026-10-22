@@ -1,6 +1,6 @@
 refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v5_m2';
 samSample = 'Simulation_Inc_CAPS_FreqSteering_v5_m2';
-freq_vect = 4e6;
+freq_vect = 5e6;
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
@@ -146,6 +146,35 @@ fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 muStr = sprintf('%g', mu);
 
+% ROIs (en mm): cuadrado dentro de la inclusión y el mismo cuadrado partido en fondo izq y der
+zc = 22.5;           % centro de la inclusión en profundidad
+xc = 0;              % centro lateral de la inclusión
+R  = 7.5;            % radio de la inclusión
+L  = 8;              % lado del cuadrado (debe caber dentro de la inclusión)
+gap = 3;             % separación entre el borde de la inclusión y el fondo
+
+xi = [xc-L/2, xc+L/2];                    % inclusión
+zi = [zc-L/2, zc+L/2];
+xbL = [xc-R-gap-L/2, xc-R-gap];           % fondo izquierdo (ancho L/2)
+xbR = [xc+R+gap, xc+R+gap+L/2];           % fondo derecho (ancho L/2)
+zb = zi;
+
+X = x_crop(:).'*1000;   Z = z_crop(:)*1000;
+[XX, ZZ] = meshgrid(X, Z);
+maskInc = XX>=xi(1)  & XX<=xi(2)  & ZZ>=zi(1) & ZZ<=zi(2);
+maskBg  = ((XX>=xbL(1) & XX<=xbL(2)) | (XX>=xbR(1) & XX<=xbR(2))) & ZZ>=zb(1) & ZZ<=zb(2);
+
+vInc = BA_final(maskInc);  vInc = vInc(~isnan(vInc));
+vBg  = BA_final(maskBg);   vBg  = vBg(~isnan(vBg));
+
+muInc = mean(vInc);  sdInc = std(vInc);
+muBg  = mean(vBg);   sdBg  = std(vBg);
+CNR   = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
+
+fprintf('Inclusión: %.2f +- %.2f (n=%d)\n', muInc, sdInc, numel(vInc));
+fprintf('Fondo:     %.2f +- %.2f (n=%d)\n', muBg, sdBg, numel(vBg));
+fprintf('Diferencia: %.2f | CNR: %.2f\n', muInc-muBg, CNR);
+
 if numel(angles) == 1
     angStr = angles{1};   
 else
@@ -180,8 +209,14 @@ title(sprintf('Mapa B/A local (TV, \\mu=%.2g), Freq %s %s', mu,freqStr,angStr));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 clim([5 12]);
 
+hold on;
+rectangle('Position',[xi(1) zi(1) L L],          'EdgeColor','c','LineWidth',1.5);
+rectangle('Position',[xbL(1) zb(1) L/2 L],       'EdgeColor','w','LineWidth',1.5);
+rectangle('Position',[xbR(1) zb(1) L/2 L],       'EdgeColor','w','LineWidth',1.5);
+hold off;
+
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_DeSC_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_DeSC_cuadrado_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -212,7 +247,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_DeSC_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_DeSC_cuadrado_%s_%s_mu%s_V4_Pink.png',freqStr,angStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
