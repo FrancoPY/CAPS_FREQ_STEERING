@@ -156,6 +156,9 @@ P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
  
 BA_final = mean(BAfreq, 3, 'omitnan');
 
+ok = conv2(double(~isnan(BA_final)), ones(5), 'same') == 25;
+BA_final(~ok) = NaN;
+
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 
