@@ -234,7 +234,7 @@ rectangle('Position',[xbR(1) zb(1) L/2 L], 'EdgeColor','w','LineWidth',1.5);
 hold off;
 
 % Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_DeSC_cuadrado_%s_%s_mu%s_V6_Pink.png',freqName,angStr,muStr));
+outNamePNG = fullfile(figDir, sprintf('BA_DeSC2_cuadrado_%s_%s_mu%s_V6_Pink.png',freqName,angStr,muStr));
 saveas(fig1, outNamePNG);
 close(fig1);
 fprintf('Figura B/A guardada en: %s\n', outNamePNG);
@@ -264,7 +264,7 @@ title(sprintf('B-mode Muestra High'));
 xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
 
 % Guardar como PNG
-outNamePNG2 = fullfile(figDir, sprintf('B-mode_DeSC_cuadrado_%s_%s_mu%s_V6_Pink.png',freqName,angStr,muStr));
+outNamePNG2 = fullfile(figDir, sprintf('B-mode_DeSC2_cuadrado_%s_%s_mu%s_V6_Pink.png',freqName,angStr,muStr));
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
