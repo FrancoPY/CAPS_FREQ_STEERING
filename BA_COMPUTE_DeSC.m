@@ -32,7 +32,7 @@ for a = 1:nAng
 end
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v5_DeSC2_m2');
+figDir = fullfile(basedir, 'figuras_v6_DeSC_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 BAfreq = [];           % aqui se guarda el B/A_L compuesto de cada frecuencia
