@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker9
-#SBATCH --output="CAPS_in_w5_computeDeMuSC_param2.out"
+#SBATCH --output="CAPS_in_w6_simulateInc9_CAPS_steering_freq_13angulos.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "computeDeMuSC;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "simulateInc9_CAPS_steering_freq;  exit"
