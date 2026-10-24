@@ -32,7 +32,7 @@ for a = 1:nAng
 end
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v6_DeSC_m2');
+figDir = fullfile(basedir, 'figuras_v6.2_DeSC_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 BAfreq = [];           % aqui se guarda el B/A_L compuesto de cada frecuencia
@@ -91,11 +91,11 @@ for freq = freq_vect
             P_sam_H_sum = P_sam_H_sum + samH;
 
             % Para el B-mode solo se usa el frame 1
-            if i == 1
-                P_ref_L_acumu = P_ref_L_acumu + refL;
-                P_ref_H_acumu = P_ref_H_acumu + refH;
-                P_sam_L_acumu = P_sam_L_acumu + samL;
-                P_sam_H_acumu = P_sam_H_acumu + samH;
+            if i == 1 && angNum(a) == 0
+                P_ref_L_acumu = refL;
+                P_ref_H_acumu = refH;
+                P_sam_L_acumu = samL;
+                P_sam_H_acumu = samH;
             end
         end
 
@@ -146,13 +146,6 @@ for freq = freq_vect
         close(figA);
     end
 end
-
-% Promedio de los angulos y de las frecuencias
-totalCombinaciones = nFreq * nAng;
-P_ref_L_meanAngles = P_ref_L_acumu / totalCombinaciones;
-P_ref_H_meanAngles = P_ref_H_acumu / totalCombinaciones;
-P_sam_L_meanAngles = P_sam_L_acumu / totalCombinaciones;
-P_sam_H_meanAngles = P_sam_H_acumu / totalCombinaciones;
  
 BA_final = mean(BAfreq, 3, 'omitnan');
 
@@ -205,16 +198,16 @@ idxStart = find(z >= 10e-3, 1, 'first');
 idxEnd   = find(z <= 50e-3, 1, 'last'); 
 z_crop_bmode = z(idxStart:idxEnd);
 
-P_ref_L_meanAngles = P_ref_L_meanAngles(idxStart:idxEnd, :);
-P_ref_H_meanAngles = P_ref_H_meanAngles(idxStart:idxEnd, :);
-P_sam_L_meanAngles = P_sam_L_meanAngles(idxStart:idxEnd, :);
-P_sam_H_meanAngles = P_sam_H_meanAngles(idxStart:idxEnd, :);
+P_ref_L_acumu = P_ref_L_acumu(idxStart:idxEnd, :);
+P_ref_H_acumu = P_ref_H_acumu(idxStart:idxEnd, :);
+P_sam_L_acumu = P_sam_L_acumu(idxStart:idxEnd, :);
+P_sam_H_acumu = P_sam_H_acumu(idxStart:idxEnd, :);
 
-refMax = max(P_ref_L_meanAngles(:));
-P_ref_L_Bmode = 20*log10(P_ref_L_meanAngles / refMax);
-P_ref_H_Bmode = 20*log10(P_ref_H_meanAngles / refMax);
-P_sam_L_Bmode = 20*log10(P_sam_L_meanAngles / refMax);
-P_sam_H_Bmode = 20*log10(P_sam_H_meanAngles / refMax);
+refMax = max(P_ref_L_acumu(:));
+P_ref_L_Bmode = 20*log10(P_ref_L_acumu / refMax);
+P_ref_H_Bmode = 20*log10(P_ref_H_acumu / refMax);
+P_sam_L_Bmode = 20*log10(P_sam_L_acumu / refMax);
+P_sam_H_Bmode = 20*log10(P_sam_H_acumu / refMax);
 
 % Visualización B/A
 fig1 = figure('Visible', 'off');
