@@ -6,7 +6,7 @@ probe = 'L14-5u';
 freqs = [4e6, 5e6, 6e6];
 
 % Ángulos de steering [grados]
-steeringAngles = [-15, -12, -10, -9, -6, -3, 0, 3, 6, 9, 10, 12, 15];
+steeringAngles = [-15, -12.5, -10, -7.5, -5, -2.5, 0, 2.5, 5, 7.5, 10, 12.5, 15];
 
 % m subaperturas
 m = 4;
