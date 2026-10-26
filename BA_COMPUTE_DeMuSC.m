@@ -34,6 +34,7 @@ figDir = fullfile(basedir, 'figuras_v6.2_DeMuSC_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
  
 BAfreq = [];           % aqui se guarda el B/A_L de cada frecuencia
+BAfreqNo = [];         % Para los mapas sin TVR
 P_ref_L_acumu = 0;
 P_ref_H_acumu = 0;
 P_sam_L_acumu = 0;
@@ -133,9 +134,11 @@ for freq = freq_vect
     z_crop = res.z(filas);
     x_crop = res.x;
     BAfreq(:,:,iF) = res.image(filas, :);
+    BAfreqNo(:,:,iF) = res.noReg(filas, :);   % sin TVR
 end
  
 BA_final = mean(BAfreq, 3, 'omitnan');
+BA_finalNo = mean(BAfreqNo, 3, 'omitnan'); %SIN TVR
  
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
@@ -157,17 +160,9 @@ X = x_crop(:).'*1000;   Z = z_crop(:)*1000;
 [XX, ZZ] = meshgrid(X, Z);
 maskInc = XX>=xi(1)  & XX<=xi(2)  & ZZ>=zi(1) & ZZ<=zi(2);
 maskBg  = ((XX>=xbL(1) & XX<=xbL(2)) | (XX>=xbR(1) & XX<=xbR(2))) & ZZ>=zb(1) & ZZ<=zb(2);
- 
-vInc = BA_final(maskInc);  vInc = vInc(~isnan(vInc));
-vBg  = BA_final(maskBg);   vBg  = vBg(~isnan(vBg));
- 
-muInc = mean(vInc);  sdInc = std(vInc);
-muBg  = mean(vBg);   sdBg  = std(vBg);
-CNR   = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
- 
-fprintf('Inclusión: %.2f +- %.2f (n=%d)\n', muInc, sdInc, numel(vInc));
-fprintf('Fondo:     %.2f +- %.2f (n=%d)\n', muBg, sdBg, numel(vBg));
-fprintf('Diferencia: %.2f | CNR: %.2f\n', muInc-muBg, CNR);
+
+mapas    = {BA_final, BA_finalNo};
+etiqueta = {'TV', 'sinTVR'};
  
 % Nombres para los archivos
 if nAng == 1
@@ -180,42 +175,51 @@ if nFreq == 1
 else
     freqName = sprintf('%dfreq', nFreq);
 end
- 
+
+for k = 1:2
+    BA = mapas{k};
+
+    vInc = BA(maskInc);  vInc = vInc(~isnan(vInc));
+    vBg  = BA(maskBg);   vBg  = vBg(~isnan(vBg));
+    
+    muInc = mean(vInc);  sdInc = std(vInc);
+    muBg  = mean(vBg);   sdBg  = std(vBg);
+    CNR   = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
+    
+    fprintf('Inclusión: %.2f +- %.2f (n=%d)\n', muInc, sdInc, numel(vInc));
+    fprintf('Fondo:     %.2f +- %.2f (n=%d)\n', muBg, sdBg, numel(vBg));
+    fprintf('Diferencia: %.2f | CNR: %.2f\n', muInc-muBg, CNR);
+
+    % Visualización B/A
+    fig1 = figure('Visible','off');
+    imagesc(x_crop*1000, z_crop*1000, BA, 'AlphaData', ~isnan(BA));
+    axis image; colormap("pink"); colorbar; clim([5 12]);
+    title(sprintf('DeMuSC %s (\\mu=%.2g), %s %s', etiqueta{k}, mu, freqName, angStr));
+    xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
+    hold on;
+    rectangle('Position',[xi(1) zi(1) L L],   'EdgeColor','c','LineWidth',1.5);
+    rectangle('Position',[xbL(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
+    rectangle('Position',[xbR(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
+    hold off;
+    saveas(fig1, fullfile(figDir, sprintf('BA_DeMuSC_%s_%s_%s_mu%s.png', etiqueta{k}, freqName, angStr, muStr)));
+    close(fig1);
+end
+    
 % Recorte de las imágenes
 idxStart = find(z >= 10e-3, 1, 'first');
 idxEnd   = find(z <= 50e-3, 1, 'last');
 z_crop_bmode = z(idxStart:idxEnd);
- 
+
 P_ref_L_acumu = P_ref_L_acumu(idxStart:idxEnd, :);
-P_ref_h_acumu = P_ref_h_acumu(idxStart:idxEnd, :);
+P_ref_H_acumu = P_ref_H_acumu(idxStart:idxEnd, :);
 P_sam_L_acumu = P_sam_L_acumu(idxStart:idxEnd, :);
 P_sam_H_acumu = P_sam_H_acumu(idxStart:idxEnd, :);
  
 refMax = max(P_ref_L_acumu(:));
 P_ref_L_Bmode = 20*log10(P_ref_L_acumu / refMax);
-P_ref_H_Bmode = 20*log10(P_ref_h_acumu / refMax);
+P_ref_H_Bmode = 20*log10(P_ref_H_acumu / refMax);
 P_sam_L_Bmode = 20*log10(P_sam_L_acumu / refMax);
 P_sam_H_Bmode = 20*log10(P_sam_H_acumu / refMax);
- 
-% Visualización B/A
-fig1 = figure('Visible', 'off');
-imagesc(x_crop*1000, z_crop*1000, BA_final, 'AlphaData', ~isnan(BA_final));
-axis image; colormap("pink"); colorbar;
-title(sprintf('Mapa B/A DeMuSC (TV, \\mu=%.2g), Freq %s %s', mu, freqName, angStr));
-xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
-clim([5 12]);
- 
-hold on;
-rectangle('Position',[xi(1) zi(1) L L], 'EdgeColor','c','LineWidth',1.5);
-rectangle('Position',[xbL(1) zb(1) L/2 L], 'EdgeColor','w','LineWidth',1.5);
-rectangle('Position',[xbR(1) zb(1) L/2 L], 'EdgeColor','w','LineWidth',1.5);
-hold off;
- 
-% Guardar como PNG
-outNamePNG = fullfile(figDir, sprintf('BA_DeMuSC_cuadrado_%s_%s_mu%s_V6_Pink.png',freqName,angStr,muStr));
-saveas(fig1, outNamePNG);
-close(fig1);
-fprintf('Figura B/A guardada en: %s\n', outNamePNG);
  
 % Visualización B-mode
 dynamicRange = 60;
