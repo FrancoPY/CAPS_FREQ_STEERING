@@ -225,10 +225,6 @@ for k = 1:2
     rectangle('Position',[xi(1) zi(1) L L],   'EdgeColor','c','LineWidth',1.5);
     rectangle('Position',[xbL(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
     rectangle('Position',[xbR(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
-    text(xi(1), zi(1)-1, sprintf('Inc: %.2f \\pm %.2f', muInc, sdInc), ...
-        'Color','c','BackgroundColor','k','Margin',1,'FontSize',9,'FontWeight','bold');
-    text(xbL(1), zb(1)-1, sprintf('Fondo: %.2f \\pm %.2f', muBg, sdBg), ...
-        'Color','w','BackgroundColor','k','Margin',1,'FontSize',9,'FontWeight','bold');
     hold off;
     saveas(fig1, fullfile(figDir, sprintf('BA_DeMuSC_%s_%s_%s_mu%s.png', etiqueta{k}, freqName, angStr, muStr)));
     close(fig1);
