@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker8
-#SBATCH --output="CAPS_in_w6_simulateInc9_CAPS_steering_freq_m2.out"
+#SBATCH --output="CAPS_in_w6_beamformingsimulateInc9_CAPS_steering_freq_m2.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "simulateInc9_CAPS_steering_freq;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "beamform_to_bf;  exit"
