@@ -3,6 +3,6 @@
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
 #SBATCH --nodelist=worker14
-#SBATCH --output="CAPS_in_w7_simulateInc9_CAPS_steering_freq_m2.out"
+#SBATCH --output="CAPS_in_w7_simulateBgnd6_CAPS_steering_freq_m2.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "simulateInc9_CAPS_steering_freq;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "simulateBgnd6_CAPS_steering_freq;  exit"
