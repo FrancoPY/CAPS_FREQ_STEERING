@@ -1,5 +1,5 @@
-sample_density = 'Simulation_Inc_CAPS_FreqSteering_v5';
-sample = 'Simulation_Inc_CAPS_FreqSteering_v6_m2';
+sample_density = 'Simulation_Inc_CAPS_FreqSteering_v7';
+sample = 'Simulation_Inc_CAPS_FreqSteering_v7_m2';
 probe = 'L14-5u';
 
 % Frecuencias [Hz]
