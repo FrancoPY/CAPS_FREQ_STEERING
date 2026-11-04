@@ -2,7 +2,7 @@
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --partition=thinkstation
-#SBATCH --nodelist=worker8
+#SBATCH --nodelist=worker14
 #SBATCH --output="CAPS_in_w6_beamformingsimulateInc9_CAPS_steering_freq_m2.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "beamform_to_bf;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "generateDensityMap;  exit"
