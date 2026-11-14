@@ -1,5 +1,5 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v5_m2';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v5_m2';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v6_m2';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v6_m2';
 freq_vect = [4e6 5e6 6e6];
  
 probe = 'L14-5u';
@@ -38,7 +38,7 @@ else
 end
  
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v6.3_DeMuSC_todas_freq_m2');
+figDir = fullfile(basedir, 'figuras_v7_DeMuSC_todas_freq_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 baSum = [];            % aqui se va sumando el B/A_C de cada frecuencia
@@ -170,23 +170,16 @@ BA_finalNo = res.noReg(filas, :);   % sin TVR
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
  
-% ROIs (en mm): cuadrado dentro de la inclusión y el mismo cuadrado partido en fondo izq y der
-zc = 22.5;           % centro de la inclusión en profundidad
-xc = 0;              % centro lateral de la inclusión
-R = 7.5;             % radio de la inclusión
-L = 8;               % lado del cuadrado (debe caber dentro de la inclusión)
-gap = 3;             % separación entre el borde de la inclusión y el fondo
- 
-xi = [xc-L/2, xc+L/2];                    % inclusión
-zi = [zc-L/2, zc+L/2];
-xbL = [xc-R-gap-L/2, xc-R-gap];           % fondo izquierdo (ancho L/2)
-xbR = [xc+R+gap, xc+R+gap+L/2];           % fondo derecho (ancho L/2)
-zb = zi;
- 
+% ROIs (en mm)
+zc = 22.5;  xc = 0;  R = 7.5;        % inclusión (círculo)
+xR = [-18 18];  zR = [12 47];        % cuadrado rojo (región total)
+margen = 0;                          % mm de separación alrededor de la inclusión
+
 X = x_crop(:).'*1000;   Z = z_crop(:)*1000;
 [XX, ZZ] = meshgrid(X, Z);
-maskInc = XX>=xi(1)  & XX<=xi(2)  & ZZ>=zi(1) & ZZ<=zi(2);
-maskBg  = ((XX>=xbL(1) & XX<=xbL(2)) | (XX>=xbR(1) & XX<=xbR(2))) & ZZ>=zb(1) & ZZ<=zb(2);
+dist = sqrt((XX-xc).^2 + (ZZ-zc).^2);
+maskInc = dist <= R;
+maskBg  = XX>=xR(1) & XX<=xR(2) & ZZ>=zR(1) & ZZ<=zR(2) & dist > R + margen;
 
 mapas    = {BA_final, BA_finalNo};
 etiqueta = {'TV', 'sinTVR'};
@@ -222,14 +215,34 @@ for k = 1:2
     title(sprintf('DeMuSC %s (\\mu=%.2g), %s %s', etiqueta{k}, mu, freqName, angStr));
     xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
     hold on;
-    rectangle('Position',[xi(1) zi(1) L L],   'EdgeColor','c','LineWidth',1.5);
-    rectangle('Position',[xbL(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
-    rectangle('Position',[xbR(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
+    rectangle('Position',[xR(1) zR(1) diff(xR) diff(zR)], 'EdgeColor','r','LineWidth',1.5);
+    rectangle('Position',[xc-R zc-R 2*R 2*R], 'Curvature',[1 1], 'EdgeColor','k','LineWidth',1.5);
     hold off;
     saveas(fig1, fullfile(figDir, sprintf('BA_DeMuSC_%s_%s_%s_mu%s.png', etiqueta{k}, freqName, angStr, muStr)));
     close(fig1);
 end
+
+% Prueba: cuántas iteraciones usar en el sin TVR
+AtA = prob.A' * prob.A;
+Aty = prob.A' * prob.y;
+iters = [2 3 4 5 7 10 15];
  
+for k = 1:numel(iters)
+    [raw,~,relRes] = cgs(AtA, Aty, 1e-5, iters(k), [], [], 6*ones(size(prob.A,2),1));
+    mapa = reshape(raw, prob.size);
+    mapa = mapa(filas,:);
+
+    vInc = mapa(maskInc);  vBg = mapa(maskBg);
+    CNR = abs(mean(vInc)-mean(vBg)) / sqrt(std(vInc)^2 + std(vBg)^2);
+    fprintf('iter %3d | Inc %.2f +- %.2f | Fondo %.2f +- %.2f | CNR %.2f | relRes %.3f\n', ...
+        iters(k), mean(vInc), std(vInc), mean(vBg), std(vBg), CNR, relRes);
+
+    fig = figure('Visible','off');
+    imagesc(x_crop*1000, z_crop*1000, mapa); axis image; colormap("pink"); colorbar; clim([5 12]);
+    title(sprintf('DeMuSC sinTVR, %d iter', iters(k)));
+    saveas(fig, fullfile(figDir, sprintf('BA_DeMuSC_sinTVR_iter%d.png', iters(k))));
+    close(fig);
+end
  
 function thetaDeg = angleStrToDeg(s)
     thetaDeg = str2double(strrep(s,'Angle_',''));
