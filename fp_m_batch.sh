@@ -5,4 +5,4 @@
 #SBATCH --nodelist=worker11
 #SBATCH --output="CAPS_in_w7.1_simulateBgnd6_CAPS_steering_freq_m2.out"
 
-srun matlab -nosplash -nodesktop -nodisplay -r "simulateBgnd6_CAPS_steering_freq;  exit"
+srun matlab -nosplash -nodesktop -nodisplay -r "simulateInc9_CAPS_steering_freq;  exit"
