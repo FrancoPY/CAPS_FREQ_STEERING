@@ -1,10 +1,11 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v6_m2';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v6_m2';
-freq_vect = [4e6 5e6 6e6];
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v7.1_m2';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v7.1_m2';
+freq_vect = [3.5e6 4.5e6 5.5e6];
  
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_0', 'Angle_-15', 'Angle_-10', 'Angle_-5', 'Angle_5', 'Angle_10', 'Angle_15'};
+angNum = [0, -15, -12.5, -10, -7.5, -5, -2.5, 2.5, 5, 7.5, 10, 12.5, 15];
+angles = arrayfun(@(t) sprintf('Angle_%d', t), angNum, 'UniformOutput', false);
  
 nFrames = 1;
  
@@ -14,7 +15,7 @@ zMaxProc = 55e-3;
  
 % Parametros del DeMuSC (funciones prepDeMuSc, calcScRayOp, invertDeMuSc, solveDeMuScTv)
 mu = 10^-0.5;
-param.gridSize = 0.6e-3;
+param.gridSize = 0.3e-3;
 param.zMin     = 10e-3;     % desde aqui se usan observaciones
 param.zMax     = 50e-3;     % hasta aqui se usan observaciones
 param.mu       = mu;
@@ -38,7 +39,7 @@ else
 end
  
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v7_DeMuSC_todas_freq_m2');
+figDir = fullfile(basedir, 'figuras_v7.2_DeMuSC_todas_freq_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 baSum = [];            % aqui se va sumando el B/A_C de cada frecuencia
@@ -50,7 +51,7 @@ for freq = freq_vect
     f_fund_r = freq;
     alpha = 0.10*((f_fund/1e6)^2)*100/8.686;
     alpha_r = 0.10*((f_fund_r/1e6)^2)*100/8.686;
-    freqStr = sprintf('%dMHz',freq/1e6);
+    freqStr = sprintf('%dMHz', round(freq/1e6));    % carpeta: 4MHz, 5MHz, 6MHz
  
     % Datos que no dependen del angulo (se leen del primer angulo)
     refDir0 = fullfile(basedir, refSample, probe, freqStr, 'bf', angles{1});

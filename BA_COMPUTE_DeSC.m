@@ -1,16 +1,17 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v5_m2';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v5_m2';
-freq_vect = [6e6];
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v7.1_m2';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v7.1_m2';
+freq_vect = [5.5e6];
 
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_0', 'Angle_-15', 'Angle_-10', 'Angle_-5', 'Angle_5', 'Angle_10', 'Angle_15'};
+angNum = [0, -15, -12.5, -10, -7.5, -5, -2.5, 2.5, 5, 7.5, 10, 12.5, 15];
+angles = arrayfun(@(t) sprintf('Angle_%d', t), angNum, 'UniformOutput', false);
 
 nFrames = 1;
     
 c0 = 1500;
 B_r = 4;     % beta de referencia (calibrado con B/A_ref = 6)
-zMaxProc = 55e-3;
+zMaxProc = 65e-3;
 
 %Parámetros del DeSC (están las funciones de invertDeSc, prepDeSc, registerDeSc, solveDeScPenalty)
 mu = 0.1;
@@ -32,7 +33,7 @@ for a = 1:nAng
 end
 
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v6.2_DeSC_m2');
+figDir = fullfile(basedir, 'figuras_v7.2_DeSC_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
 
 BAfreq = [];           % aqui se guarda el B/A_L compuesto de cada frecuencia
@@ -49,7 +50,8 @@ for freq = freq_vect
     f_fund_r = freq;
     alpha = 0.10*((f_fund/1e6)^2)*100/8.686;
     alpha_r = 0.10*((f_fund_r/1e6)^2)*100/8.686;
-    freqStr = sprintf('%dMHz',freq/1e6);
+    freqStr  = sprintf('%dMHz', round(freq/1e6));    % carpeta (redondeado)
+    freqTag  = sprintf('%gMHz', freq/1e6);           % frecuencia real, para mostrar
 
     % Datos que no dependen del angulo (se leen del primer angulo)
     refDir0 = fullfile(basedir, refSample, probe, freqStr, 'bf', angles{1});
@@ -127,7 +129,7 @@ for freq = freq_vect
 
     % DeSC para esta frecuencia: invierte cada angulo y los promedia
     res = invertDeSc(baStack, x, z, angNum, param, true);
-    fprintf('%s | DeSC convergio: %d\n', freqStr, res.converged);
+    fprintf('%s | DeSC convergio: %d\n', freqTag, res.converged);
  
     % Quedarse con 10 a 50 mm
     filas = res.z >= 10e-3 & res.z <= 50e-3;
@@ -142,9 +144,9 @@ for freq = freq_vect
         figA = figure('Visible', 'off');
         imagesc(x_crop*1000, z_crop*1000, mapa, 'AlphaData', ~isnan(mapa));
         axis image; colormap("pink"); colorbar; clim([5 12]);
-        title(sprintf('B/A_L %s, ángulo %g°, \\mu=%.2g', freqStr, angNum(a), mu));
+        title(sprintf('B/A_L %s, ángulo %g°, \\mu=%.2g', freqTag, angNum(a), mu));
         xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
-        saveas(figA, fullfile(figDir, sprintf('BA_L_%s_%s_mu%s.png', freqStr, angles{a}, muStr)));
+        saveas(figA, fullfile(figDir, sprintf('BA_L_%s_%s_mu%s.png', freqTag, angles{a}, muStr)));
         close(figA);
     end
 end
@@ -155,25 +157,18 @@ BA_finalNo = mean(BAfreqNo, 3, 'omitnan'); %SIN TVR
 fprintf('B/A compounded: min=%.2f max=%.2f, #NaN=%d\n', ...
     min(BA_final(:),[],'omitnan'), max(BA_final(:),[],'omitnan'), sum(isnan(BA_final(:))));
 
-% ROIs (en mm): cuadrado dentro de la inclusión y el mismo cuadrado partido en fondo izq y der
-zc = 22.5;           % centro de la inclusión en profundidad
-xc = 0;              % centro lateral de la inclusión
-R = 7.5;            % radio de la inclusión
-L = 8;              % lado del cuadrado (debe caber dentro de la inclusión)
-gap = 3;             % separación entre el borde de la inclusión y el fondo
-
-xi = [xc-L/2, xc+L/2];                    % inclusión
-zi = [zc-L/2, zc+L/2];
-xbL = [xc-R-gap-L/2, xc-R-gap];           % fondo izquierdo (ancho L/2)
-xbR = [xc+R+gap, xc+R+gap+L/2];           % fondo derecho (ancho L/2)
-zb = zi;
+% ROIs (en mm)
+zc = 22.5;  xc = 0;  R = 7.5;        % inclusión (círculo)
+xR = [-18 18];  zR = [12 47];        % cuadrado rojo (región total)
+margen = 0;                          % mm de separación alrededor de la inclusión
 
 X = x_crop(:).'*1000;   Z = z_crop(:)*1000;
 [XX, ZZ] = meshgrid(X, Z);
-maskInc = XX>=xi(1)  & XX<=xi(2)  & ZZ>=zi(1) & ZZ<=zi(2);
-maskBg  = ((XX>=xbL(1) & XX<=xbL(2)) | (XX>=xbR(1) & XX<=xbR(2))) & ZZ>=zb(1) & ZZ<=zb(2);
+dist = sqrt((XX-xc).^2 + (ZZ-zc).^2);
+maskInc = dist <= R;
+maskBg  = XX>=xR(1) & XX<=xR(2) & ZZ>=zR(1) & ZZ<=zR(2) & dist > R + margen;
 
-mapas = {BA_final, BA_finalNo};
+mapas    = {BA_final, BA_finalNo};
 etiqueta = {'TV', 'sinTVR'};
 
 % Nombres para los archivos
@@ -183,24 +178,17 @@ else
     angStr = sprintf('SC%dang', nAng);
 end
 if nFreq == 1
-    freqName = sprintf('%dMHz', freq_vect(1)/1e6);
+    freqName = sprintf('%gMHz', freq_vect(1)/1e6);
 else
     freqName = sprintf('%dfreq', nFreq);
 end
 
+fprintf('\n===== DeSC | %s | %s | grid %.1f mm | maxIter %d =====\n', ...
+    freqName, angStr, param.gridSize*1e3, param.maxIter);
+
 for k = 1:2
     BA = mapas{k};
-
-    vInc = BA(maskInc);  vInc = vInc(~isnan(vInc));
-    vBg  = BA(maskBg);   vBg  = vBg(~isnan(vBg));
-    
-    muInc = mean(vInc);  sdInc = std(vInc);
-    muBg  = mean(vBg);   sdBg  = std(vBg);
-    CNR   = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
-    
-    fprintf('Inclusión: %.2f +- %.2f (n=%d)\n', muInc, sdInc, numel(vInc));
-    fprintf('Fondo:     %.2f +- %.2f (n=%d)\n', muBg, sdBg, numel(vBg));
-    fprintf('Diferencia: %.2f | CNR: %.2f\n', muInc-muBg, CNR);
+    imprimirStats(sprintf('%s', etiqueta{k}), BA, maskInc, maskBg);
 
     % Visualización B/A
     fig1 = figure('Visible','off');
@@ -209,9 +197,8 @@ for k = 1:2
     title(sprintf('DeSC %s (\\mu=%.2g), %s %s', etiqueta{k}, mu, freqName, angStr));
     xlabel('Posición Lateral (mm)'); ylabel('Profundidad (mm)');
     hold on;
-    rectangle('Position',[xi(1) zi(1) L L],   'EdgeColor','c','LineWidth',1.5);
-    rectangle('Position',[xbL(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
-    rectangle('Position',[xbR(1) zb(1) L/2 L],'EdgeColor','w','LineWidth',1.5);
+    rectangle('Position',[xR(1) zR(1) diff(xR) diff(zR)], 'EdgeColor','r','LineWidth',1.5);
+    rectangle('Position',[xc-R zc-R 2*R 2*R], 'Curvature',[1 1], 'EdgeColor','k','LineWidth',1.5);
     hold off;
     saveas(fig1, fullfile(figDir, sprintf('BA_DeSC_%s_%s_%s_mu%s.png', etiqueta{k}, freqName, angStr, muStr)));
     close(fig1);
@@ -264,9 +251,40 @@ saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
 
+% Prueba: cuántas iteraciones usar en el sin TVR (DeSC)
+iters = [2 3 4 5 7 10 15 30 50 100 300];
+
+fprintf('\n===== DeSC sinTVR vs iteraciones | %s | %s | grid %.1f mm =====\n', ...
+    freqName, angStr, param.gridSize*1e3);
+
+for k = 1:numel(iters)
+    p = param;
+    p.maxIter = iters(k);
+    r = invertDeSc(baStack, x, z, angNum, p, false);   % false = sin TV
+    mapa = r.noReg(filas,:);
+
+    imprimirStats(sprintf('sinTVR iter %d', iters(k)), mapa, maskInc, maskBg);
+
+    fig = figure('Visible','off');
+    imagesc(x_crop*1000, z_crop*1000, mapa, 'AlphaData', ~isnan(mapa));
+    axis image; colormap("pink"); colorbar; clim([5 12]);
+    title(sprintf('DeSC sinTVR, %d iter', iters(k)));
+    saveas(fig, fullfile(figDir, sprintf('BA_DeSC_sinTVR_%s_iter%d.png', freqName, iters(k))));
+    close(fig);
+end
 
 function thetaDeg = angleStrToDeg(s)
     thetaDeg = str2double(strrep(s,'Angle_',''));
+end
+
+function imprimirStats(nombre, mapa, maskInc, maskBg)
+    vInc = mapa(maskInc);  vInc = vInc(~isnan(vInc));
+    vBg  = mapa(maskBg);   vBg  = vBg(~isnan(vBg));
+    muInc = mean(vInc);  sdInc = std(vInc);
+    muBg  = mean(vBg);   sdBg  = std(vBg);
+    CNR = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
+    fprintf('%-16s | Inc %.2f +- %.2f (n=%d) | Fondo %.2f +- %.2f (n=%d) | Dif %.2f | CNR %.2f\n', ...
+        nombre, muInc, sdInc, numel(vInc), muBg, sdBg, numel(vBg), muInc-muBg, CNR);
 end
 
 function env = leerEnvolvente(archivo, campo, N, hFilter)

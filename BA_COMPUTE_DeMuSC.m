@@ -1,10 +1,12 @@
-refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v6_m2';
-samSample = 'Simulation_Inc_CAPS_FreqSteering_v6_m2';
+refSample = 'Simulation_Bgnd_CAPS_FreqSteering_v7_m2';
+samSample = 'Simulation_Inc_CAPS_FreqSteering_v7_m2';
 freq_vect = [5e6];
  
 probe = 'L14-5u';
 basedir = fullfile(pwd,'CAPS-FRECUENCIA-STEERING');
-angles = {'Angle_0', 'Angle_-15', 'Angle_-10', 'Angle_-5', 'Angle_5', 'Angle_10', 'Angle_15'};
+paso = 2.5;                                   % 5, 2.5, 2, 1 o 0.5
+angNum = [0, setdiff(-15:paso:15, 0)];        % el 0 siempre primero
+angles = arrayfun(@(t) sprintf('Angle_%d', t), angNum, 'UniformOutput', false);
  
 nFrames = 1;
  
@@ -14,7 +16,7 @@ zMaxProc = 55e-3;
  
 % Parametros del DeMuSC (funciones prepDeMuSc, calcScRayOp, invertDeMuSc, solveDeMuScTv)
 mu = 10^-0.5;
-param.gridSize = 0.6e-3;
+param.gridSize = 0.3e-3;
 param.zMin     = 10e-3;     % desde aqui se usan observaciones
 param.zMax     = 50e-3;     % hasta aqui se usan observaciones
 param.mu       = mu;
@@ -30,7 +32,7 @@ for a = 1:nAng
 end
  
 % Crear carpeta para guardar las figuras
-figDir = fullfile(basedir, 'figuras_v6.2_DeMuSC_m2');
+figDir = fullfile(basedir, 'figuras_v7.1_DeMuSC_m2');
 if ~exist(figDir, 'dir'); mkdir(figDir); end
  
 BAfreq = [];           % aqui se guarda el B/A_L de cada frecuencia
@@ -47,7 +49,7 @@ for freq = freq_vect
     f_fund_r = freq;
     alpha = 0.10*((f_fund/1e6)^2)*100/8.686;
     alpha_r = 0.10*((f_fund_r/1e6)^2)*100/8.686;
-    freqStr = sprintf('%dMHz',freq/1e6);
+    freqStr = sprintf('%dMHz', round(freq/1e6));    % nombre de la carpeta (redondeado)
  
     % Datos que no dependen del angulo (se leen del primer angulo)
     refDir0 = fullfile(basedir, refSample, probe, freqStr, 'bf', angles{1});
@@ -144,7 +146,7 @@ for freq = freq_vect
     % DeMuSC para esta frecuencia: un solo sistema con todos los angulos
     prob = prepDeMuSc(baStack, x, z, angNum, param);
     res = invertDeMuSc(prob, param);
-    fprintf('%s | DeMuSC convergio: %d (iter %d), init flag %d\n', freqStr, res.diag.converged, res.diag.nIter, res.diag.init.flag);
+    fprintf('%s | DeMuSC convergio: %d (iter %d), init flag %d\n', sprintf('%gMHz', freq/1e6), res.diag.converged, res.diag.nIter, res.diag.init.flag);
  
     % Quedarse con 10 a 50 mm
     filas = res.z >= 10e-3 & res.z <= 50e-3;
@@ -181,24 +183,18 @@ else
     angStr = sprintf('SC%dang', nAng);
 end
 if nFreq == 1
-    freqName = sprintf('%dMHz', freq_vect(1)/1e6);
+    freqName = sprintf('%gMHz', freq_vect(1)/1e6);   % 3.5MHz, 4.5MHz, 5.5MHz
 else
     freqName = sprintf('%dfreq', nFreq);
 end
 
+fprintf('\n===== DeMuSC | %s | %s | grid %.1f mm | maxIter %d =====\n', ...
+    freqName, angStr, param.gridSize*1e3, param.maxIter);
+
 for k = 1:2
     BA = mapas{k};
-
-    vInc = BA(maskInc);  vInc = vInc(~isnan(vInc));
-    vBg  = BA(maskBg);   vBg  = vBg(~isnan(vBg));
     
-    muInc = mean(vInc);  sdInc = std(vInc);
-    muBg  = mean(vBg);   sdBg  = std(vBg);
-    CNR   = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
-    
-    fprintf('Inclusión: %.2f +- %.2f (n=%d)\n', muInc, sdInc, numel(vInc));
-    fprintf('Fondo:     %.2f +- %.2f (n=%d)\n', muBg, sdBg, numel(vBg));
-    fprintf('Diferencia: %.2f | CNR: %.2f\n', muInc-muBg, CNR);
+    imprimirStats(etiqueta{k}, BA, maskInc, maskBg);
 
     % Visualización B/A
     fig1 = figure('Visible','off');
@@ -259,31 +255,40 @@ outNamePNG2 = fullfile(figDir, sprintf('B-mode_DeMuSC_cuadrado_%s_%s_mu%s_V6_Pin
 saveas(fig2, outNamePNG2);
 close(fig2);
 fprintf('Figura B-mode guardada en: %s\n', outNamePNG2);
+ 
+% Prueba: cuántas iteraciones usar en el sin TVR (DeMuSC)
+fprintf('\n===== DeMuSC sinTVR vs iteraciones | %s | %s | grid %.1f mm =====\n', ...
+    freqName, angStr, param.gridSize*1e3);
 
-% Prueba: cuántas iteraciones usar en el sin TVR
 AtA = prob.A' * prob.A;
 Aty = prob.A' * prob.y;
 filas = prob.z >= 10e-3 & prob.z <= 50e-3;
-iters = [7 15 30 50 100 200];
+iters = [2 3 4 5 7 10 15 30 50 100 200];
 
 for k = 1:numel(iters)
-    [raw,~,relRes] = cgs(AtA, Aty, 1e-5, iters(k), [], [], 6*ones(size(prob.A,2),1));
+    raw = cgs(AtA, Aty, 1e-5, iters(k), [], [], 6*ones(size(prob.A,2),1));
     mapa = reshape(raw, prob.size);
     mapa = mapa(filas,:);
 
-    vInc = mapa(maskInc);  vBg = mapa(maskBg);
-    CNR = abs(mean(vInc)-mean(vBg)) / sqrt(std(vInc)^2 + std(vBg)^2);
-    fprintf('iter %3d | Inc %.2f +- %.2f | Fondo %.2f +- %.2f | CNR %.2f | relRes %.3f\n', ...
-        iters(k), mean(vInc), std(vInc), mean(vBg), std(vBg), CNR, relRes);
+    imprimirStats(sprintf('sinTVR iter %d', iters(k)), mapa, maskInc, maskBg);
 
     fig = figure('Visible','off');
     imagesc(x_crop*1000, z_crop*1000, mapa); axis image; colormap("pink"); colorbar; clim([5 12]);
     title(sprintf('DeMuSC sinTVR, %d iter', iters(k)));
-    saveas(fig, fullfile(figDir, sprintf('BA_DeMuSC_sinTVR_iter%d.png', iters(k))));
+    saveas(fig, fullfile(figDir, sprintf('BA_DeMuSC_sinTVR_%s_iter%d.png', freqName, iters(k))));
     close(fig);
 end
- 
- 
+
+function imprimirStats(nombre, mapa, maskInc, maskBg)
+    vInc = mapa(maskInc);  vInc = vInc(~isnan(vInc));
+    vBg  = mapa(maskBg);   vBg  = vBg(~isnan(vBg));
+    muInc = mean(vInc);  sdInc = std(vInc);
+    muBg  = mean(vBg);   sdBg  = std(vBg);
+    CNR = abs(muInc - muBg) / sqrt(sdInc^2 + sdBg^2);
+    fprintf('%-16s | Inc %.2f +- %.2f (n=%d) | Fondo %.2f +- %.2f (n=%d) | Dif %.2f | CNR %.2f\n', ...
+        nombre, muInc, sdInc, numel(vInc), muBg, sdBg, numel(vBg), muInc-muBg, CNR);
+end
+
 function thetaDeg = angleStrToDeg(s)
     thetaDeg = str2double(strrep(s,'Angle_',''));
 end
